@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HZYEntityFrameWork
+namespace HZYEntityFrameWork.CheckEntity
 {
-    class Program
+    /// <summary>
+    /// 实体验证类
+    /// </summary>
+    public class Check
     {
-        static void Main(string[] args)
+        public Check()
         {
 
         }

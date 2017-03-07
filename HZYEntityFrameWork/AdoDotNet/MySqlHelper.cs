@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HZYEntityFrameWork
+namespace HZYEntityFrameWork.AdoDotNet
 {
-    class Program
+    class MySqlHelper
     {
-        static void Main(string[] args)
-        {
 
-        }
     }
 }
