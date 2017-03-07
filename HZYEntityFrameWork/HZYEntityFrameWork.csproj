@@ -45,11 +45,15 @@
     <Compile Include="AdoDotNet\MySqlHelper.cs" />
     <Compile Include="AdoDotNet\SqlHelper.cs" />
     <Compile Include="CheckEntity\Check.cs" />
-    <Compile Include="Entity\BaseModel.cs" />
+    <Compile Include="Entity\BaseModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\T_Users.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SQLContext\ISqlContext.cs" />
+    <Compile Include="SQLContext\ISqlContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
