@@ -11,7 +11,7 @@ namespace HZYEntityFrameWork.Entity
         public string TableName = string.Empty;
         public BaseModel()
         {
-             
+            
         }
 
     }
