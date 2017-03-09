@@ -46,14 +46,14 @@
     <Compile Include="AdoDotNet\SqlHelper.cs" />
     <Compile Include="CheckEntity\Check.cs" />
     <Compile Include="CustomAttribute\CBaseAttribute.cs" />
-    <Compile Include="CustomAttribute\CompareSignAttribute.cs" />
-    <Compile Include="CustomAttribute\FiledConfigAttribute.cs" />
-    <Compile Include="CustomAttribute\RangeSignAttribute.cs" />
-    <Compile Include="CustomAttribute\RegularExpressionSignAttribute.cs" />
-    <Compile Include="CustomAttribute\RepeatSignAttribute.cs" />
-    <Compile Include="CustomAttribute\RequiredSignAttribute.cs" />
-    <Compile Include="CustomAttribute\SetNumberSignAttribute.cs" />
-    <Compile Include="CustomAttribute\StringLengthSignAttribute.cs" />
+    <Compile Include="CustomAttribute\CCompareAttribute.cs" />
+    <Compile Include="CustomAttribute\CFiledAttribute.cs" />
+    <Compile Include="CustomAttribute\CRangeAttribute.cs" />
+    <Compile Include="CustomAttribute\CRegularExpressionAttribute.cs" />
+    <Compile Include="CustomAttribute\CRepeatAttribute.cs" />
+    <Compile Include="CustomAttribute\CRequiredAttribute.cs" />
+    <Compile Include="CustomAttribute\CSetNumberAttribute.cs" />
+    <Compile Include="CustomAttribute\CStringLengthAttribute.cs" />
     <Compile Include="Entity\BaseModel.cs">
       <SubType>Code</SubType>
     </Compile>

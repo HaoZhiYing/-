@@ -9,13 +9,14 @@ namespace HZYEntityFrameWork.CustomAttribute
     /// <summary>
     /// 验证字符串长度
     /// </summary>
-    public class StringLengthSignAttribute : BaseSignAttribute
+    public class CStringLengthAttribute : CBaseAttribute
     {
         public int MaxLength { get; set; }
         public int MinLength { get; set; }
-        public StringLengthSignAttribute(int minLength)
+        public CStringLengthAttribute(int minLength)
         {
             this.MinLength = minLength;
         }
+
     }
 }

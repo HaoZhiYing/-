@@ -10,9 +10,9 @@ namespace HZYEntityFrameWork.CustomAttribute
     /// 属性的描述
     /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class FiledConfigAttribute : Attribute
+    public class CFiledAttribute : Attribute
     {
-        public FiledConfigAttribute()
+        public CFiledAttribute()
         {
             this.DisplayName = "";
             this.IsPrimaryKey = false;
@@ -31,5 +31,6 @@ namespace HZYEntityFrameWork.CustomAttribute
         /// 是否 显示在列表中
         /// </summary>
         public bool IsShowColumn { get; set; }
+
     }
 }

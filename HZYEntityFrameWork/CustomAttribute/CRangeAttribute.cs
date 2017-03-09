@@ -9,8 +9,9 @@ namespace HZYEntityFrameWork.CustomAttribute
     /// <summary>
     /// 范围验证
     /// </summary>
-    public class RangeSignAttribute : BaseSignAttribute
+    public class CRangeAttribute : CBaseAttribute
     {
+
         /// <summary>
         /// 最小值
         /// </summary>
@@ -23,12 +24,11 @@ namespace HZYEntityFrameWork.CustomAttribute
         /// 验证数据类型
         /// </summary>
         public Type type { get; set; }
-        public RangeSignAttribute(int minLength, int maxLength)
+        public CRangeAttribute(int minLength, int maxLength)
         {
             this.MinLength = minLength;
             this.MaxLength = MaxLength;
         }
-
 
     }
 }

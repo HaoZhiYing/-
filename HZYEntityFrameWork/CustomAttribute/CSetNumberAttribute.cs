@@ -9,7 +9,7 @@ namespace HZYEntityFrameWork.CustomAttribute
     /// <summary>
     /// 编号 标记
     /// </summary>
-    public class SetNumberSignAttribute : BaseSignAttribute
+    public class CSetNumberAttribute : CBaseAttribute
     {
         /// <summary>
         /// 编号长度
@@ -20,7 +20,7 @@ namespace HZYEntityFrameWork.CustomAttribute
         /// 编号标记
         /// </summary>
         /// <param name="length">编号长度</param>
-        public SetNumberSignAttribute(int length)
+        public CSetNumberAttribute(int length)
         {
             this.Length = length;
         }

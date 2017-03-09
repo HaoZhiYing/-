@@ -6,18 +6,17 @@ using System.Threading.Tasks;
 
 namespace HZYEntityFrameWork.CustomAttribute
 {
-    /// <summary>
-    /// 验证是否重复
-    /// </summary>
-    public class RepeatSignAttribute : BaseSignAttribute
+    public class CRepeatAttribute
     {
         /// <summary>
         /// 要追加的 Where 条件 例如： and 1=1  and filed1='{filed1}'
         /// </summary>
         public string Where { get; set; }
-        public RepeatSignAttribute()
+        public CRepeatAttribute()
         {
 
         }
+
+
     }
 }

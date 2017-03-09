@@ -14,12 +14,11 @@ namespace HZYEntityFrameWork.Reflection
         /// <summary>
         /// 获取类中所有的公共属性 PropertyInfo集合
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="entity"></param>
+        /// <param name="t"></param>
         /// <returns></returns>
         public static List<PropertyInfo> GetAllPropertyInfo(Type t)
         {
-            return t.GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public).ToList();
+            return t.GetProperties(BindingFlags.Instance | BindingFlags.Public).ToList();
         }
 
         /// <summary>
@@ -39,9 +38,9 @@ namespace HZYEntityFrameWork.Reflection
         /// <param name="t"></param>
         /// <param name="filed"></param>
         /// <param name="value"></param>
-        public static void SetValue(Type t, string filed, string value)
+        public static void SetValue<T>(T entity, string filed, object value) where T : class,new()
         {
-            BaseHelper.GetPropertyInfo(t, filed).SetValue(t, value);
+            BaseHelper.GetPropertyInfo(typeof(T), filed).SetValue(entity, value);
         }
 
         /// <summary>
@@ -49,9 +48,9 @@ namespace HZYEntityFrameWork.Reflection
         /// </summary>
         /// <param name="t"></param>
         /// <param name="filed"></param>
-        public static void GetValue(Type t, string filed)
+        public static object GetValue<T>(T entity, string filed)
         {
-            BaseHelper.GetPropertyInfo(t, filed).GetValue(t);
+            return BaseHelper.GetPropertyInfo(typeof(T), filed).GetValue(entity);
         }
 
     }
