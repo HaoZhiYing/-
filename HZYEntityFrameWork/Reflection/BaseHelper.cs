@@ -48,7 +48,7 @@ namespace HZYEntityFrameWork.Reflection
         /// </summary>
         /// <param name="t"></param>
         /// <param name="filed"></param>
-        public static object GetValue<T>(T entity, string filed)
+        public static object GetValue<T>(T entity, string filed) where T : class,new()
         {
             return BaseHelper.GetPropertyInfo(typeof(T), filed).GetValue(entity);
         }
