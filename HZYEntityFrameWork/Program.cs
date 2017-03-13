@@ -22,6 +22,7 @@ namespace HZYEntityFrameWork
             tu.cUsers_LoginPwd = "12311231";
             tu.cUsers_Name = "hhhhhhhh";
             tu.dUsers_CreateTime = DateTime.Now;
+           
             string str = string.Empty;
             Type t = tu.GetType();
             var list = BaseHelper.GetAllPropertyInfo(t);

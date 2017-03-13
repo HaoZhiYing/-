@@ -10,11 +10,11 @@ namespace HZYEntityFrameWork.CustomAttribute
     /// 属性的描述
     /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class CFiledAttribute : Attribute
+    public class FiledAttribute : Attribute
     {
-        public CFiledAttribute()
+        public FiledAttribute()
         {
-            this.DisplayName = "";
+            this.DisplayName = string.Empty;
             this.IsPrimaryKey = false;
             this.IsShowColumn = true;
         }

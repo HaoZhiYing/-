@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace HZYEntityFrameWork.CustomAttribute
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class CBaseAttribute : Attribute
+    public class BaseAttribute : Attribute
     {
-        public CBaseAttribute() { }
+        public BaseAttribute() { }
 
         /// <summary>
         /// 错误信息
@@ -19,5 +19,6 @@ namespace HZYEntityFrameWork.CustomAttribute
         /// 是否验证
         /// </summary>
         public bool IsValidate { get; set; }
+
     }
 }

@@ -45,15 +45,15 @@
     <Compile Include="AdoDotNet\MySqlHelper.cs" />
     <Compile Include="AdoDotNet\SqlHelper.cs" />
     <Compile Include="CheckEntity\Check.cs" />
-    <Compile Include="CustomAttribute\CBaseAttribute.cs" />
+    <Compile Include="CustomAttribute\BaseAttribute.cs" />
     <Compile Include="CustomAttribute\CCompareAttribute.cs" />
-    <Compile Include="CustomAttribute\CFiledAttribute.cs" />
     <Compile Include="CustomAttribute\CRangeAttribute.cs" />
     <Compile Include="CustomAttribute\CRegularExpressionAttribute.cs" />
     <Compile Include="CustomAttribute\CRepeatAttribute.cs" />
     <Compile Include="CustomAttribute\CRequiredAttribute.cs" />
     <Compile Include="CustomAttribute\CSetNumberAttribute.cs" />
     <Compile Include="CustomAttribute\CStringLengthAttribute.cs" />
+    <Compile Include="CustomAttribute\FiledAttribute.cs" />
     <Compile Include="Entity\BaseModel.cs">
       <SubType>Code</SubType>
     </Compile>
