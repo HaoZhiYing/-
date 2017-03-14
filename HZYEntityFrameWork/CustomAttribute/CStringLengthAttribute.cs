@@ -9,7 +9,7 @@ namespace HZYEntityFrameWork.CustomAttribute
     /// <summary>
     /// 验证字符串长度
     /// </summary>
-    public class CStringLengthAttribute : CBaseAttribute
+    public class CStringLengthAttribute : BaseAttribute
     {
         public int MaxLength { get; set; }
         public int MinLength { get; set; }

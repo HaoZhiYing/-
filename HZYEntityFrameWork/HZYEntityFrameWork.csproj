@@ -62,9 +62,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\BaseHelper.cs" />
     <Compile Include="Reflection\EntityHelper.cs" />
+    <Compile Include="SQLContext\ExpressionHelper.cs" />
     <Compile Include="SQLContext\ISqlContext.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SQLContext\Update.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -21,7 +21,7 @@ namespace HZYEntityFrameWork.Entity
         public List<string> NotChecks = new List<string>();
 
         /// <summary>
-        /// 设置插入null值的字段集合
+        /// 设置插入Null值的字段集合
         /// </summary>
         public List<string> InsertNullFiles = new List<string>();
 

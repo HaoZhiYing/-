@@ -9,7 +9,7 @@ namespace HZYEntityFrameWork.CustomAttribute
     /// <summary>
     /// 范围验证
     /// </summary>
-    public class CRangeAttribute : CBaseAttribute
+    public class CRangeAttribute : BaseAttribute
     {
 
         /// <summary>

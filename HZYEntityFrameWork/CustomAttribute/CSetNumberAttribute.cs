@@ -9,7 +9,7 @@ namespace HZYEntityFrameWork.CustomAttribute
     /// <summary>
     /// 编号 标记
     /// </summary>
-    public class CSetNumberAttribute : CBaseAttribute
+    public class CSetNumberAttribute : BaseAttribute
     {
         /// <summary>
         /// 编号长度

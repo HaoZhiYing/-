@@ -9,7 +9,7 @@ namespace HZYEntityFrameWork.CustomAttribute
     /// <summary>
     /// 正则表达式验证
     /// </summary>
-    public class CRegularExpressionAttribute : CBaseAttribute
+    public class CRegularExpressionAttribute : BaseAttribute
     {
         /// <summary>
         /// 正则表达式
