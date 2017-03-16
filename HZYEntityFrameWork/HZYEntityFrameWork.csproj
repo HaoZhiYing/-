@@ -54,6 +54,8 @@
     <Compile Include="CustomAttribute\CSetNumberAttribute.cs" />
     <Compile Include="CustomAttribute\CStringLengthAttribute.cs" />
     <Compile Include="CustomAttribute\FiledAttribute.cs" />
+    <Compile Include="Entity\AopEntity.cs" />
+    <Compile Include="Entity\AopProxy.cs" />
     <Compile Include="Entity\BaseModel.cs">
       <SubType>Code</SubType>
     </Compile>

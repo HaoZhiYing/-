@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using HZYEntityFrameWork.SQLContext;
 using HZYEntityFrameWork.Model;
 using HZYEntityFrameWork.Reflection;
+using System.Linq.Expressions;
 
 namespace HZYEntityFrameWork
 {
@@ -39,17 +40,28 @@ namespace HZYEntityFrameWork
             Console.WriteLine(str + " 耗时：" + s.ElapsedTicks);
             Console.ReadKey();
              */
-            T_Users tu = new T_Users();
-            tu.uUsers_ID = Guid.NewGuid();
 
-            T_Users user = new T_Users() { uUsers_ID = Guid.Empty, cUsers_Email = "1396510655qq.com" };
-            Update up = new Update();//new T_Users() { uUsers_ID = Guid.Empty, cUsers_Email = "1396510655qq.com" }
-            up.Updates<T_Users>(m => new T_Users()
+            Stopwatch s = new Stopwatch();
+
+            s.Start();
+            for (int i = 0; i < 100000; i++)
             {
-                uUsers_ID = tu.uUsers_ID,
-                cUsers_Email = "1396510655qq.com"
-            });
-
+                T_Users tu = new T_Users();
+                tu.uUsers_ID = Guid.NewGuid();
+                var aa = tu.uUsers_ID;
+                T_Users user = new T_Users() { uUsers_ID = Guid.Empty, cUsers_Email = "1396510655qq.com" };
+                Update up = new Update();//new T_Users() { uUsers_ID = Guid.Empty, cUsers_Email = "1396510655qq.com" }
+            }
+            
+            //up.Updates<T_Users>(m => user);
+            Console.WriteLine(" 耗时：" + s.ElapsedMilliseconds);
+            Console.ReadKey();
         }
+
+        //public Expression<Func<T, T>> ToModel<T>(T entity)
+        //{
+        //    return m => new T() { };
+        //}
+
     }
 }

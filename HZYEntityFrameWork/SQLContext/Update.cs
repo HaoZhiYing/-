@@ -14,6 +14,12 @@ namespace HZYEntityFrameWork.SQLContext
 
         public bool Updates<T>(Expression<Func<T, T>> func)
         {
+            var bd = func.Body.Type;
+
+            //var dd = bd.GetMember("uUsers_ID").GetValue(0);
+            bd.GetProperty("uUsers_ID").GetValue(func);
+            //ParameterExpression a = Expression.MemberInit(func,);//.Parameter(typeof(T), func);   //创建一个表达式树中的参数，作为一个节点，这里是最下层的节点
+            ExpressionHelper.ExpressionRouter(func);
             var mie = func.Body as MemberInitExpression;
             List<string> member = new List<string>();
             string result = string.Empty;

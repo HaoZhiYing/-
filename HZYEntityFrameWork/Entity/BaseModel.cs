@@ -8,7 +8,8 @@ using HZYEntityFrameWork.Reflection;
 
 namespace HZYEntityFrameWork.Entity
 {
-    public class BaseModel
+    //[AopEntity]
+    public class BaseModel //: ContextBoundObject
     {
         /// <summary>
         /// 表名
@@ -21,9 +22,9 @@ namespace HZYEntityFrameWork.Entity
         public List<string> NotChecks = new List<string>();
 
         /// <summary>
-        /// 设置插入Null值的字段集合
+        /// 
         /// </summary>
-        public List<string> InsertNullFiles = new List<string>();
+        public readonly Dictionary<string, object> fileds = new Dictionary<string, object>();
 
         /// <summary>
         /// 实体操作Helper
@@ -33,8 +34,23 @@ namespace HZYEntityFrameWork.Entity
         public BaseModel()
         {
             NotChecks = new List<string>();
-            InsertNullFiles = new List<string>();
+            fileds = new Dictionary<string, object>();
             EH = new EntityHelper<BaseModel>();
+        }
+
+        private void Set(string FiledName, object value)
+        {
+            //if (PropertyValues == null)
+            //    PropertyValues = "";
+            if (value != null && value is string)
+            {
+                if (value.Equals("null"))
+                    value = DBNull.Value;
+            }
+            if (fileds.ContainsKey(FiledName))
+                fileds[FiledName] = value;
+            else
+                fileds.Add(FiledName, value);
         }
 
     }
