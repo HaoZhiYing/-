@@ -28,24 +28,28 @@ namespace HZYEntityFrameWork.SQLContext.Context
         /// <returns></returns>
         public override SQL_Container GetSqlString(MemberInitExpression mie)
         {
-            return this.GetSQL(mie);
+            throw new NotImplementedException();
         }
 
-        public override SQL_Container GetSqlString(MemberInitExpression mie, Expression<Func<T>> where)
+        public override SQL_Container GetSqlString<M>(MemberInitExpression mie, Expression<Func<M, bool>> where)
         {
-            throw new NotImplementedException();
+            return this.GetSQL(mie, this.GetWhereString(where));
+        }
+
+        public override SQL_Container GetSqlString(MemberInitExpression mie, T where)
+        {
+            return this.GetSQL(mie, this.GetWhereString(where));
         }
 
         public override SQL_Container GetSqlString(MemberInitExpression mie, string where)
         {
-            throw new NotImplementedException();
+            return this.GetSQL(mie, where);
         }
 
-        private SQL_Container GetSQL(MemberInitExpression mie)
+        private SQL_Container GetSQL(MemberInitExpression mie, string where)
         {
             var TableName = mie.Type.Name;
-            var col = new List<string>();
-            var val = new List<string>();
+            var set = new List<string>();
             var li = new List<SQL_Container>();
             var list = mie.Bindings.ToList();
             SqlParameter[] sparr = new SqlParameter[list.Count];
@@ -53,18 +57,15 @@ namespace HZYEntityFrameWork.SQLContext.Context
             {
                 var value = ExpressionHelper.ExpressionRouter(item.Expression);
                 var key = item.Member.Name;
-                col.Add(key); val.Add("@" + key + "");
+                set.Add(key + "=@" + key + "");
                 sparr.SetValue(new SqlParameter() { ParameterName = key, Value = value }, list.IndexOf(item));
             }
-            string sql = string.Format(" UPDATE {0} SET {1} WHERE 1=1 {2} ", TableName, string.Join(",", col), string.Join(",", val));
+            string sql = string.Format(" UPDATE {0} SET {1} WHERE 1=1 {2}", TableName, string.Join(",", set), where);
             return new SQL_Container(sql, sparr);
         }
 
 
-        private string GetWhere()
-        {
-            return "";
-        }
+
 
     }
 }

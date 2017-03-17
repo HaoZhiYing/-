@@ -21,10 +21,16 @@ namespace HZYEntityFrameWork.ExpressionTree
             else if (exp is MemberExpression)
             {
                 MemberExpression me = ((MemberExpression)exp);
-                UnaryExpression cast = Expression.Convert(me, typeof(object));
-                object obj = Expression.Lambda<Func<object>>(cast).Compile().Invoke();
-                return obj.ToString();
-                //return me.Member.Name;
+                try
+                {
+                    UnaryExpression cast = Expression.Convert(me, typeof(object));
+                    object obj = Expression.Lambda<Func<object>>(cast).Compile().Invoke();
+                    return obj.ToString();
+                }
+                catch (Exception)
+                {
+                    return me.Member.Name;
+                }
             }
             else if (exp is NewArrayExpression)
             {
@@ -40,15 +46,18 @@ namespace HZYEntityFrameWork.ExpressionTree
             else if (exp is MethodCallExpression)
             {
                 MethodCallExpression mce = (MethodCallExpression)exp;
-                if (mce.Method.Name == "Like")
-                    return string.Format("({0} like {1})", ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
-                else if (mce.Method.Name == "NotLike")
-                    return string.Format("({0} Not like {1})", ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
-                else if (mce.Method.Name == "In")
-                    return string.Format("{0} In ({1})", ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
-                else if (mce.Method.Name == "NotIn")
-                    return string.Format("{0} Not In ({1})", ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
+                UnaryExpression cast = Expression.Convert(mce, typeof(object));
+                object obj = Expression.Lambda<Func<object>>(cast).Compile().Invoke();
+                return obj.ToString();
 
+                //if (mce.Method.Name == "Like")
+                //    return string.Format("({0} like {1})", ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
+                //else if (mce.Method.Name == "NotLike")
+                //    return string.Format("({0} Not like {1})", ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
+                //else if (mce.Method.Name == "In")
+                //    return string.Format("{0} In ({1})", ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
+                //else if (mce.Method.Name == "NotIn")
+                //    return string.Format("{0} Not In ({1})", ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
             }
             else if (exp is ConstantExpression)
             {

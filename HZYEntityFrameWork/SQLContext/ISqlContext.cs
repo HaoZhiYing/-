@@ -15,6 +15,5 @@ namespace HZYEntityFrameWork.SQLContext
     public interface ISqlContext<T> where T : Entity.BaseModel, new()
     {
         SQL_Container GetSqlString(MemberInitExpression mie);
-        // string GetSqlString(T entity);
     }
 }

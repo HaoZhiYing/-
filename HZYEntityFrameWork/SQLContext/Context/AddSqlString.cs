@@ -31,7 +31,12 @@ namespace HZYEntityFrameWork.SQLContext.Context
             return this.GetSQL(mie);
         }
 
-        public override SQL_Container GetSqlString(MemberInitExpression mie, Expression<Func<T>> where)
+        public override SQL_Container GetSqlString<M>(MemberInitExpression mie, Expression<Func<M, bool>> where)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SQL_Container GetSqlString(MemberInitExpression mie, T where)
         {
             throw new NotImplementedException();
         }
@@ -47,7 +52,7 @@ namespace HZYEntityFrameWork.SQLContext.Context
             var col = new List<string>();
             var val = new List<string>();
             var li = new List<SQL_Container>();
-            var list = mie.Bindings.ToList();
+            var list = mie.Bindings.ToList().FindAll(item => ExpressionHelper.ExpressionRouter(((MemberAssignment)item).Expression) != null && ExpressionHelper.ExpressionRouter(((MemberAssignment)item).Expression) != "null");
             SqlParameter[] sparr = new SqlParameter[list.Count];
             foreach (MemberAssignment item in list)
             {

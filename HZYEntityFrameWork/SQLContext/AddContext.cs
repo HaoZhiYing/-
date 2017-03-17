@@ -11,7 +11,7 @@ using System.Dynamic;
 
 namespace HZYEntityFrameWork.SQLContext
 {
-    public class AddContext<T> where T : Entity.BaseModel, new()
+    public class AddContext<T> where T : BaseModel, new()
     {
         Context.AddSqlString<T> add = new Context.AddSqlString<T>();
         CommitContext commit = new CommitContext();
