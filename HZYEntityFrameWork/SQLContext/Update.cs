@@ -5,21 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 //
 using System.Linq.Expressions;
+using HZYEntityFrameWork.ExpressionTree;
+using HZYEntityFrameWork.Reflection;
 
 namespace HZYEntityFrameWork.SQLContext
 {
-    public class Update
+    public class Update<T> where T : Entity.BaseModel, new()
     {
         public Update() { }
 
-        public bool Updates<T>(Expression<Func<T, T>> func)
+        public bool Updates(Expression<Func<T, T>> func)
         {
-            var bd = func.Body.Type;
-
-            //var dd = bd.GetMember("uUsers_ID").GetValue(0);
-            bd.GetProperty("uUsers_ID").GetValue(func);
-            //ParameterExpression a = Expression.MemberInit(func,);//.Parameter(typeof(T), func);   //创建一个表达式树中的参数，作为一个节点，这里是最下层的节点
-            ExpressionHelper.ExpressionRouter(func);
             var mie = func.Body as MemberInitExpression;
             List<string> member = new List<string>();
             string result = string.Empty;
@@ -29,6 +25,27 @@ namespace HZYEntityFrameWork.SQLContext
                 string update = item.Member.Name + "='" + eh + "' ";
                 member.Add(update);
 
+            }
+            result = string.Join(",", member);
+            return true;
+        }
+
+        public bool Updates(T entity)
+        {
+            List<MemberBinding> list = new List<MemberBinding>();
+            var fileds = EntityHelper<T>.EH.GetAllPropertyInfo(entity);
+            foreach (var item in fileds)
+            {
+                list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
+            }
+            var mie = Expression.MemberInit(Expression.New(typeof(T)), list);
+            List<string> member = new List<string>();
+            string result = string.Empty;
+            foreach (MemberAssignment item in mie.Bindings)
+            {
+                var eh = ExpressionHelper.ExpressionRouter(item.Expression);
+                string update = item.Member.Name + "='" + eh + "' ";
+                member.Add(update);
             }
             result = string.Join(",", member);
             return true;

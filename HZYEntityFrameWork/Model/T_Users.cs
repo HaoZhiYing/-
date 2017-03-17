@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 //
 using HZYEntityFrameWork.Entity;
-using System.Reflection;
+using HZYEntityFrameWork.CustomAttribute;
 
 namespace HZYEntityFrameWork.Model
 {
@@ -17,6 +17,7 @@ namespace HZYEntityFrameWork.Model
             this.TableName = "T_Users";
         }
 
+        [Filed(DisplayName = "ID", IsPrimaryKey = true)]
         public Guid? uUsers_ID { get; set; }
         public string cUsers_Name { get; set; }
         public string cUsers_LoginName { get; set; }

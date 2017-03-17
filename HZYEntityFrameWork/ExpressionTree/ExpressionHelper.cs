@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 //
 using System.Linq.Expressions;
 
-namespace HZYEntityFrameWork.SQLContext
+namespace HZYEntityFrameWork.ExpressionTree
 {
     public class ExpressionHelper
     {

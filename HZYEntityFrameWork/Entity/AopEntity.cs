@@ -12,8 +12,7 @@ namespace HZYEntityFrameWork.Entity
     {
         public override MarshalByRefObject CreateInstance(Type serverType)
         {
-            AopProxy<BaseModel> realProxy = new AopProxy<BaseModel>(serverType);
-            return realProxy.GetTransparentProxy() as MarshalByRefObject;
+            return new AopProxy(serverType).GetTransparentProxy() as MarshalByRefObject;
         }
     }
 }

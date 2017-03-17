@@ -54,17 +54,35 @@
     <Compile Include="CustomAttribute\CSetNumberAttribute.cs" />
     <Compile Include="CustomAttribute\CStringLengthAttribute.cs" />
     <Compile Include="CustomAttribute\FiledAttribute.cs" />
+    <Compile Include="DBContext.cs" />
     <Compile Include="Entity\AopEntity.cs" />
     <Compile Include="Entity\AopProxy.cs" />
     <Compile Include="Entity\BaseModel.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Entity\SQL_Container.cs" />
     <Compile Include="Model\T_Users.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\BaseHelper.cs" />
     <Compile Include="Reflection\EntityHelper.cs" />
-    <Compile Include="SQLContext\ExpressionHelper.cs" />
+    <Compile Include="ExpressionTree\ExpressionHelper.cs" />
+    <Compile Include="SQLContext\AbstractSqlContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQLContext\AddContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQLContext\CommitContext.cs" />
+    <Compile Include="SQLContext\Context\AddSqlString.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQLContext\Context\DeleteSqlString.cs" />
+    <Compile Include="SQLContext\Context\EditSqlString.cs" />
+    <Compile Include="SQLContext\Context\FindSqlString.cs" />
+    <Compile Include="SQLContext\DeleteContext.cs" />
+    <Compile Include="SQLContext\EditContext.cs" />
+    <Compile Include="SQLContext\FindContext.cs" />
     <Compile Include="SQLContext\ISqlContext.cs">
       <SubType>Code</SubType>
     </Compile>

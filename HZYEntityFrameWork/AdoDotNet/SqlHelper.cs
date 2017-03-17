@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Data.Common;
 //using Microsoft.Practices.EnterpriseLibrary.Data;
 
-namespace Utility
+namespace HZYEntityFrameWork.AdoDotNet
 {
     /// <summary>
     /// The SqlHelper class is intended to encapsulate high performance, scalable best practices for 

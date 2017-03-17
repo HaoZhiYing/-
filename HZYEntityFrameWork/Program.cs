@@ -37,23 +37,23 @@ namespace HZYEntityFrameWork
                 str += "-------" + item.Name + "=" + BaseHelper.GetValue(tu, item.Name) + "\r\n";
             });
             s.Stop();
-            Console.WriteLine(str + " 耗时：" + s.ElapsedTicks);
+            Console.WriteLine(str + " 耗时：" + s.ElapsedMilliseconds);
             Console.ReadKey();
              */
 
             Stopwatch s = new Stopwatch();
-
+            DBContext db = new DBContext();
             s.Start();
             for (int i = 0; i < 100000; i++)
             {
-                T_Users tu = new T_Users();
-                tu.uUsers_ID = Guid.NewGuid();
-                var aa = tu.uUsers_ID;
+                //T_Users tu = new T_Users();
+                //tu.uUsers_ID = Guid.NewGuid();
                 T_Users user = new T_Users() { uUsers_ID = Guid.Empty, cUsers_Email = "1396510655qq.com" };
-                Update up = new Update();//new T_Users() { uUsers_ID = Guid.Empty, cUsers_Email = "1396510655qq.com" }
+                //Update<T_Users> up = new Update<T_Users>();
+                //up.Updates(tu);
+                //up.Updates(m => new T_Users() { uUsers_ID = Guid.Empty, cUsers_Email = "1396510655qq.com" });
+                db.Add(user);
             }
-            
-            //up.Updates<T_Users>(m => user);
             Console.WriteLine(" 耗时：" + s.ElapsedMilliseconds);
             Console.ReadKey();
         }

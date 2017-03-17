@@ -14,14 +14,13 @@ namespace HZYEntityFrameWork.Entity
     /// <summary>
     /// 属性拦截器
     /// </summary>
-    public class AopProxy<T> : RealProxy where T : BaseModel
+    public class AopProxy : RealProxy
     {
         Type ServerType { get; set; }
         public AopProxy(Type serverType)
             : base(serverType)
         {
             ServerType = serverType;
-
         }
 
         public override IMessage Invoke(IMessage msg)
@@ -44,18 +43,12 @@ namespace HZYEntityFrameWork.Entity
                     if (callMsg.MethodName.StartsWith("set_") && args.Length == 1)
                     {
                         //这里检测到是set方法，然后应怎么调用对象的其它方法呢？
-
+                        //dynamic dy = ServerType.BaseType.GetMethod("Set", BindingFlags.NonPublic | BindingFlags.Instance);
+                        //dy.Invoke(GetUnwrappedServer(), new object[] { callMsg.MethodName.Substring(4), args[0] });
                         //在构造函数中，根据传进来的serverType，获取到SetXX的方法MethodInfo：  调用 Set 函数
                         var method = ServerType.BaseType.GetMethod("Set", BindingFlags.NonPublic | BindingFlags.Instance);
                         method.Invoke(GetUnwrappedServer(), new object[] { callMsg.MethodName.Substring(4), args[0] });//对属性进行调用
-                        //var aa = callMsg.MethodBase;
-
                     }
-                    //else if (callMsg.MethodName.StartsWith("get_"))
-                    //{
-                    //    var method = ServerType.BaseType.GetMethod("Get", BindingFlags.NonPublic | BindingFlags.Instance);
-                    //    var obj = method.Invoke(GetUnwrappedServer(), new object[] { callMsg.MethodName.Substring(4) });//对属性进行调用
-                    //}
                     object o = callMsg.MethodBase.Invoke(GetUnwrappedServer(), args);
                     message = new ReturnMessage(o, args, args.Length, callMsg.LogicalCallContext, callMsg);
                 }

@@ -40,7 +40,7 @@ namespace HZYEntityFrameWork.Reflection
         /// <param name="value"></param>
         public static void SetValue<T>(T entity, string filed, object value) where T : class,new()
         {
-            BaseHelper.GetPropertyInfo(typeof(T), filed).SetValue(entity, value);
+            BaseHelper.GetPropertyInfo(entity.GetType(), filed).SetValue(entity, value);
         }
 
         /// <summary>
