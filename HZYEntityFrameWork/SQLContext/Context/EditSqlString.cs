@@ -18,6 +18,7 @@ namespace HZYEntityFrameWork.SQLContext.Context
     public class EditSqlString<T> : AbstractSqlContext<T> where T : BaseModel, new()
     {
         // UPDATE TAB SET  WHERE 1=1 
+        List<SqlParameter> list_sqlpar = new List<SqlParameter>();
 
         public EditSqlString() { }
 
@@ -33,12 +34,12 @@ namespace HZYEntityFrameWork.SQLContext.Context
 
         public override SQL_Container GetSqlString<M>(MemberInitExpression mie, Expression<Func<M, bool>> where)
         {
-            return this.GetSQL(mie, this.GetWhereString(where));
+            return this.GetSQL(mie, " AND " + this.GetWhereString(where, ref list_sqlpar));
         }
 
         public override SQL_Container GetSqlString(MemberInitExpression mie, T where)
         {
-            return this.GetSQL(mie, this.GetWhereString(where));
+            return this.GetSQL(mie, this.GetWhereString(where, ref list_sqlpar));
         }
 
         public override SQL_Container GetSqlString(MemberInitExpression mie, string where)
@@ -50,18 +51,16 @@ namespace HZYEntityFrameWork.SQLContext.Context
         {
             var TableName = mie.Type.Name;
             var set = new List<string>();
-            var li = new List<SQL_Container>();
             var list = mie.Bindings.ToList();
-            SqlParameter[] sparr = new SqlParameter[list.Count];
             foreach (MemberAssignment item in list)
             {
-                var value = ExpressionHelper.ExpressionRouter(item.Expression);
+                var value = ExpressionHelper.DealExpress(item.Expression);
                 var key = item.Member.Name;
                 set.Add(key + "=@" + key + "");
-                sparr.SetValue(new SqlParameter() { ParameterName = key, Value = value }, list.IndexOf(item));
+                list_sqlpar.Add(new SqlParameter() { ParameterName = key, Value = value });
             }
             string sql = string.Format(" UPDATE {0} SET {1} WHERE 1=1 {2}", TableName, string.Join(",", set), where);
-            return new SQL_Container(sql, sparr);
+            return new SQL_Container(sql, list_sqlpar.ToArray());
         }
 
 

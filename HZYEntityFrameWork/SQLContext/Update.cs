@@ -21,10 +21,9 @@ namespace HZYEntityFrameWork.SQLContext
             string result = string.Empty;
             foreach (MemberAssignment item in mie.Bindings)
             {
-                var eh = ExpressionHelper.ExpressionRouter(item.Expression);
+                var eh = ExpressionHelper.DealExpress(item.Expression);
                 string update = item.Member.Name + "='" + eh + "' ";
                 member.Add(update);
-
             }
             result = string.Join(",", member);
             return true;
@@ -43,7 +42,7 @@ namespace HZYEntityFrameWork.SQLContext
             string result = string.Empty;
             foreach (MemberAssignment item in mie.Bindings)
             {
-                var eh = ExpressionHelper.ExpressionRouter(item.Expression);
+                var eh = ExpressionHelper.DealExpress(item.Expression);
                 string update = item.Member.Name + "='" + eh + "' ";
                 member.Add(update);
             }

@@ -31,7 +31,7 @@ namespace HZYEntityFrameWork.Entity
             //this._Not_SQL_Parameter = SQL;
             SQL_Parameter.ToList().ForEach(item =>
             {
-                this._Not_SQL_Parameter = this._SQL.Replace("@" + item.ParameterName, item.Value == null ? null : item.Value.ToString());
+                this._Not_SQL_Parameter = this._SQL.Replace("@" + item.ParameterName, item.Value == null ? null : "'" + item.Value.ToString() + "' ");
             });
         }
 

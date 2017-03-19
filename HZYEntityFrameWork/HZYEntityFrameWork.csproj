@@ -61,12 +61,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Entity\SQL_Container.cs" />
+    <Compile Include="ExpressionTree\ExpressionHelper.cs" />
     <Compile Include="Model\T_Users.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\BaseHelper.cs" />
     <Compile Include="Reflection\EntityHelper.cs" />
-    <Compile Include="ExpressionTree\ExpressionHelper.cs" />
     <Compile Include="SQLContext\AbstractSqlContext.cs">
       <SubType>Code</SubType>
     </Compile>

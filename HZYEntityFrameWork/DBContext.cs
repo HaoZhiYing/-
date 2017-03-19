@@ -14,11 +14,13 @@ namespace HZYEntityFrameWork
     {
         protected AddContext<BaseModel> add = new AddContext<BaseModel>();
         protected EditContext<BaseModel> edit = new EditContext<BaseModel>();
+        protected DeleteContext<BaseModel> delete = new DeleteContext<BaseModel>();
 
         public DBContext()
         {
             add = new AddContext<BaseModel>();
             edit = new EditContext<BaseModel>();
+            delete = new DeleteContext<BaseModel>();
         }
 
         public object Add(BaseModel entity)
@@ -53,22 +55,62 @@ namespace HZYEntityFrameWork
 
         public bool Edit(BaseModel entity, ref List<SQL_Container> li)
         {
-            return edit.Edit(entity);
+            return edit.Edit(entity, ref li);
         }
 
         public bool Edit(BaseModel entity, string where, ref List<SQL_Container> li)
         {
-            return edit.Edit(entity, where);
+            return edit.Edit(entity, where, ref li);
         }
 
         public bool Edit(BaseModel entity, BaseModel where, ref List<SQL_Container> li)
         {
-            return edit.Edit(entity, where);
+            return edit.Edit(entity, where, ref li);
         }
 
         public bool Edit<M>(Expression<Func<M, M>> entity, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
         {
-            return edit.Edit(entity, where);
+            return edit.Edit(entity, where, ref li);
+        }
+
+        public bool Delete(BaseModel entity)
+        {
+            return delete.Delete(entity);
+        }
+
+        public bool Delete(BaseModel entity, string where)
+        {
+            return delete.Delete(entity, where);
+        }
+
+        public bool Delete(BaseModel entity, BaseModel where)
+        {
+            return delete.Delete(entity, where);
+        }
+
+        public bool Delete<M>(Expression<Func<M, M>> entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
+        {
+            return delete.Delete(entity, where);
+        }
+
+        public bool Delete(BaseModel entity, ref List<SQL_Container> li)
+        {
+            return delete.Delete(entity, ref li);
+        }
+
+        public bool Delete(BaseModel entity, string where, ref List<SQL_Container> li)
+        {
+            return delete.Delete(entity, where, ref li);
+        }
+
+        public bool Delete(BaseModel entity, BaseModel where, ref List<SQL_Container> li)
+        {
+            return delete.Delete(entity, where, ref li);
+        }
+
+        public bool Delete<M>(Expression<Func<M, M>> entity, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
+        {
+            return delete.Delete(entity, where, ref li);
         }
 
 

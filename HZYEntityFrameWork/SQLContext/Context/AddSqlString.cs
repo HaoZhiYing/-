@@ -52,11 +52,11 @@ namespace HZYEntityFrameWork.SQLContext.Context
             var col = new List<string>();
             var val = new List<string>();
             var li = new List<SQL_Container>();
-            var list = mie.Bindings.ToList().FindAll(item => ExpressionHelper.ExpressionRouter(((MemberAssignment)item).Expression) != null && ExpressionHelper.ExpressionRouter(((MemberAssignment)item).Expression) != "null");
+            var list = mie.Bindings.ToList().FindAll(item => ExpressionHelper.DealExpress(((MemberAssignment)item).Expression) != null && ExpressionHelper.DealExpress(((MemberAssignment)item).Expression) != "null");
             SqlParameter[] sparr = new SqlParameter[list.Count];
             foreach (MemberAssignment item in list)
             {
-                var value = ExpressionHelper.ExpressionRouter(item.Expression);
+                var value = ExpressionHelper.DealExpress(item.Expression);
                 var key = item.Member.Name;
                 col.Add(key); val.Add("@" + key + "");
                 sparr.SetValue(new SqlParameter() { ParameterName = key, Value = value }, list.IndexOf(item));
