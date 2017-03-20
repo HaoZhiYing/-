@@ -23,14 +23,14 @@ namespace HZYEntityFrameWork.SQLContext
             var pK = entity.EH.GetPropertyInfo(entity, entity.EH.GetKeyName(entity));
             var fileds = entity.EH.GetAllPropertyInfo(entity).FindAll(item => item.GetValue(entity) != null || item.GetValue(entity) != "null");
             foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
-            return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list));
+            return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list), " AND " + pK.Name + "='" + pK.GetValue(entity) + "' ");
         }
 
         private SQL_Container GetSql(T entity, string where)
         {
             var list = new List<MemberBinding>();
             var pK = entity.EH.GetPropertyInfo(entity, entity.EH.GetKeyName(entity));
-            var fileds = entity.EH.GetAllPropertyInfo(entity);
+            var fileds = entity.EH.GetAllPropertyInfo(entity).FindAll(item => item.GetValue(entity) != null || item.GetValue(entity) != "null");
             foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
             return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list), where);
         }
@@ -39,7 +39,7 @@ namespace HZYEntityFrameWork.SQLContext
         {
             var list = new List<MemberBinding>();
             var pK = entity.EH.GetPropertyInfo(entity, entity.EH.GetKeyName(entity));
-            var fileds = entity.EH.GetAllPropertyInfo(entity);
+            var fileds = entity.EH.GetAllPropertyInfo(entity).FindAll(item => item.GetValue(entity) != null || item.GetValue(entity) != "null");
             foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
             return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list), where);
         }
@@ -48,7 +48,7 @@ namespace HZYEntityFrameWork.SQLContext
         {
             var list = new List<MemberBinding>();
             var pK = entity.EH.GetPropertyInfo(entity, entity.EH.GetKeyName(entity));
-            var fileds = entity.EH.GetAllPropertyInfo(entity);
+            var fileds = entity.EH.GetAllPropertyInfo(entity).FindAll(item => item.GetValue(entity) != null || item.GetValue(entity) != "null");
             foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
             return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list), where);
         }

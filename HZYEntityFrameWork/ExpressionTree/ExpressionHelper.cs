@@ -205,7 +205,7 @@ namespace HZYEntityFrameWork.ExpressionTree
                 {
                     UnaryExpression cast = Expression.Convert(member, typeof(object));
                     object obj = Expression.Lambda<Func<object>>(cast).Compile().Invoke();
-                    return obj == null ? "" : obj.ToString();
+                    return obj == null ? "NULL" : string.Format("'{0}'", obj.ToString());
                 }
             }
             return "";
@@ -225,12 +225,12 @@ namespace HZYEntityFrameWork.ExpressionTree
             }
             if (vaule is string)
             {
-                v_str = string.Format("'{0}'", vaule.ToString());
+                v_str = string.Format("{0}", vaule.ToString());
             }
             else if (vaule is DateTime)
             {
                 DateTime time = (DateTime)vaule;
-                v_str = string.Format("'{0}'", time.ToString("yyyy-MM-dd HH:mm:ss"));
+                v_str = string.Format("{0}", time.ToString("yyyy-MM-dd HH:mm:ss"));
             }
             else
             {
@@ -240,21 +240,15 @@ namespace HZYEntityFrameWork.ExpressionTree
         }
         public static string DealBinaryExpression(BinaryExpression exp)
         {
-
             string left = DealExpress(exp.Left);
             string oper = GetOperStr(exp.NodeType);
             string right = DealExpress(exp.Right);
-
             if (right == "NULL")
             {
                 if (oper == "=")
-                {
-                    oper = " is ";
-                }
+                    oper = " IS ";
                 else
-                {
-                    oper = " is not ";
-                }
+                    oper = " IS NOT ";
             }
             return left + oper + right;
         }

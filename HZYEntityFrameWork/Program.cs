@@ -18,7 +18,7 @@ namespace HZYEntityFrameWork
         {
             Stopwatch s = new Stopwatch();
             s.Start();
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 DBContext db = new DBContext();
                 T_Users user = new T_Users();
@@ -31,12 +31,17 @@ namespace HZYEntityFrameWork
                 //var key = db.Add(user);
                 //db.Edit(user);
                 //db.Edit(set=>new T_Users(){},where=>where.);
-                db.Edit<T_Users>(set => new T_Users()
-                {
-                    cUsers_LoginName = "哈哈我不想说了"
-                }, where => where.uUsers_ID == Guid.Parse("306de9a2-920f-43a7-aed4-83e6ad7aca61")
-                    && where.cUsers_Email.Contains("aa")
-                && where.cUsers_Email != Guid.NewGuid().ToString());
+                //if (db.Edit<T_Users>(set => new T_Users()
+                //   {
+                //       cUsers_LoginName = "哈哈我不想说了"
+                //   }, where => where.uUsers_ID == Guid.Parse("306de9a2-920f-43a7-aed4-83e6ad7aca61")
+                //   && where.cUsers_Email.Contains("aa")
+                //   && where.cUsers_Email != Guid.NewGuid().ToString()))
+                //{
+
+                //}
+
+                db.Edit(user);
             }
             Console.WriteLine(" 耗时：" + s.ElapsedMilliseconds);
             Console.ReadKey();

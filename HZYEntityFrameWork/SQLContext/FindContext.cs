@@ -13,9 +13,14 @@ namespace HZYEntityFrameWork.SQLContext
 {
     public class FindContext<T> where T : BaseModel, new()
     {
-        Context.EditSqlString<T> sqlstring = new Context.EditSqlString<T>();
+        Context.FindSqlString<T> sqlstring = new Context.FindSqlString<T>();
         CommitContext commit = new CommitContext();
         public FindContext() { }
 
+        public M Find<M>(M entity) where M : BaseModel, new()
+        {
+            sqlstring.w
+            return null;
+        }
     }
 }

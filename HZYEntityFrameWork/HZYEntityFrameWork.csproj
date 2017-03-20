@@ -60,6 +60,8 @@
     <Compile Include="Entity\BaseModel.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Entity\M_JqGridColModel.cs" />
+    <Compile Include="Entity\PagingEntity.cs" />
     <Compile Include="Entity\SQL_Container.cs" />
     <Compile Include="ExpressionTree\ExpressionHelper.cs" />
     <Compile Include="Model\T_Users.cs" />
