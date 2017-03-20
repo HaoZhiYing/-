@@ -58,9 +58,6 @@ namespace HZYEntityFrameWork.SQLContext.Context
             return new SQL_Container(sql, list_sqlpar.ToArray());
         }
 
-        public string aa() { 
-        
-        }
 
     }
 }
