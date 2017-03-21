@@ -35,6 +35,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -64,6 +65,7 @@
     <Compile Include="Entity\PagingEntity.cs" />
     <Compile Include="Entity\SQL_Container.cs" />
     <Compile Include="ExpressionTree\ExpressionHelper.cs" />
+    <Compile Include="Model\json.cs" />
     <Compile Include="Model\T_Users.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

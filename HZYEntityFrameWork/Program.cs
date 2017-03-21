@@ -12,13 +12,14 @@ using System.Linq.Expressions;
 namespace HZYEntityFrameWork
 {
     using System.Diagnostics;
+    using System.Web.Script.Serialization;
     class Program
     {
         static void Main(string[] args)
         {
             Stopwatch s = new Stopwatch();
             s.Start();
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 1; i++)
             {
                 DBContext db = new DBContext();
                 T_Users user = new T_Users();
@@ -41,8 +42,20 @@ namespace HZYEntityFrameWork
 
                 //}
 
-                db.Edit(user);
+                //db.Edit(user);
+                user = new T_Users();
+                user.uUsers_ID = Guid.Parse("306de9a2-920f-43a7-aed4-83e6ad7aca61");
+                var model = db.Find(user);
             }
+
+            JavaScriptSerializer jss = new JavaScriptSerializer();
+            dynamic dy = jss.Deserialize<dynamic>(@"{
+    'total': '2',
+    'pageSize': '20',
+    'list': {rows:[{'channel':'lzyq88','customer_id':'104607'}]},
+    'currentPage': '1'
+}");
+
             Console.WriteLine(" 耗时：" + s.ElapsedMilliseconds);
             Console.ReadKey();
         }

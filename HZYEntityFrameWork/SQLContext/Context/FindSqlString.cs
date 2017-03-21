@@ -42,19 +42,26 @@ namespace HZYEntityFrameWork.SQLContext.Context
             return this.GetSQL(mie, where);
         }
 
+
+        public SQL_Container GetSqlStringOrderBy(MemberInitExpression mie, string orderby)
+        {
+            return this.GetSQL(mie, ExpressionHelper.DealExpress(mie));
+        }
+
         private SQL_Container GetSQL(MemberInitExpression mie, string where)
         {
+            var list_par = new List<SqlParameter>();
             var TableName = mie.Type.Name;
-            var set = new List<string>();
-            var list = mie.Bindings.ToList();
-            foreach (MemberAssignment item in list)
-            {
-                var value = ExpressionHelper.DealExpress(item.Expression);
-                var key = item.Member.Name;
-                set.Add(key + "=@" + key + "");
-                list_sqlpar.Add(new SqlParameter() { ParameterName = key, Value = value });
-            }
-            string sql = string.Format(" SELECT {0} FROM {1} WHERE 1=1 {2}", "", TableName, string.Join(",", set), where);
+            var list = mie.Bindings.ToList().FindAll(item => ExpressionHelper.DealExpress(((MemberAssignment)item).Expression) != null && ExpressionHelper.DealExpress(((MemberAssignment)item).Expression) != "null");
+
+            string sql = string.Format(" SELECT {0} FROM {1} WHERE 1=1 {2}", "*", TableName, where);
+            return new SQL_Container(sql, list_sqlpar.ToArray());
+        }
+
+        private SQL_Container GetSQL(MemberInitExpression mie, string where, string orderby)
+        {
+            var TableName = mie.Type.Name;
+            string sql = string.Format(" SELECT {0} FROM {1} WHERE 1=1 {2}", "*", TableName, where);
             return new SQL_Container(sql, list_sqlpar.ToArray());
         }
 

@@ -15,12 +15,14 @@ namespace HZYEntityFrameWork
         protected AddContext<BaseModel> add = new AddContext<BaseModel>();
         protected EditContext<BaseModel> edit = new EditContext<BaseModel>();
         protected DeleteContext<BaseModel> delete = new DeleteContext<BaseModel>();
+        protected FindContext<BaseModel> find = new FindContext<BaseModel>();
 
         public DBContext()
         {
             add = new AddContext<BaseModel>();
             edit = new EditContext<BaseModel>();
             delete = new DeleteContext<BaseModel>();
+            find = new FindContext<BaseModel>();
         }
 
         public object Add(BaseModel entity)
@@ -112,6 +114,12 @@ namespace HZYEntityFrameWork
         {
             return delete.Delete(entity, where, ref li);
         }
+
+        public M Find<M>(M where, string orderby = "") where M : BaseModel, new()
+        {
+            return find.Find<M>(where, orderby);
+        }
+
 
 
     }

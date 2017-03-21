@@ -58,7 +58,7 @@ namespace HZYEntityFrameWork.SQLContext
             string _where = string.Empty;
             if (where.Body is BinaryExpression)
             {
-                BinaryExpression be = ((BinaryExpression)where.Body);
+                //BinaryExpression be = ((BinaryExpression)where.Body);
                 _where = ExpressionHelper.DealExpress(where.Body);
                 //_where = ExpressionHelper.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
             }

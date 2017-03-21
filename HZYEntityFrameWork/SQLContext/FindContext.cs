@@ -17,10 +17,43 @@ namespace HZYEntityFrameWork.SQLContext
         CommitContext commit = new CommitContext();
         public FindContext() { }
 
-        public M Find<M>(M entity) where M : BaseModel, new()
+        private SQL_Container GetSql<M>(M where, string orderby) where M : BaseModel, new()
         {
-            sqlstring.w
+            var list = new List<MemberBinding>();
+            var fileds = where.EH.GetAllPropertyInfo(where).FindAll(item => item.GetValue(where) != null || item.GetValue(where) != "null");
+            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(where), item.PropertyType)));
+            return sqlstring.GetSqlStringOrderBy(Expression.MemberInit(Expression.New(where.GetType()), list), orderby);
+        }
+
+        private SQL_Container GetSql(T where)
+        {
+            var list = new List<MemberBinding>();
+            var fileds = where.EH.GetAllPropertyInfo(where).FindAll(item => item.GetValue(where) != null || item.GetValue(where) != "null");
+            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(where), item.PropertyType)));
+            return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(where.GetType()), list));
+        }
+
+
+
+        public M Find<M>(M entity, string orderby) where M : BaseModel, new()
+        {
+            var sql = this.GetSql(entity, orderby);
             return null;
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
