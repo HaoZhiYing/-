@@ -58,8 +58,7 @@ namespace HZYEntityFrameWork.SQLContext
             var sql = this.GetSql(entity);
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return true;
-            else
-                return false;
+            return false;
         }
 
         public bool Edit(T entity, string where)
@@ -67,8 +66,7 @@ namespace HZYEntityFrameWork.SQLContext
             var sql = this.GetSql(entity, where);
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return true;
-            else
-                return false;
+            return false;
         }
 
         public bool Edit(T entity, T where)
@@ -76,8 +74,7 @@ namespace HZYEntityFrameWork.SQLContext
             var sql = this.GetSql(entity, where);
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return true;
-            else
-                return false;
+            return false;
         }
 
         public bool Edit<M>(Expression<Func<M, M>> set, Expression<Func<M, bool>> where) where M : BaseModel, new()
@@ -85,8 +82,7 @@ namespace HZYEntityFrameWork.SQLContext
             var sql = sqlstring.GetSqlString(set.Body as MemberInitExpression, where);
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return true;
-            else
-                return false;
+            return false;
         }
 
         public bool Edit(T entity, ref List<SQL_Container> li)

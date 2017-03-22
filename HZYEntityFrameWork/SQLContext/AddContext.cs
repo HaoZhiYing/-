@@ -51,8 +51,7 @@ namespace HZYEntityFrameWork.SQLContext
             var sql = this.GetSql(m.T);
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return m.id;
-            else
-                return null;
+            return null;
         }
 
         public object Add(T entity, ref List<SQL_Container> li)
