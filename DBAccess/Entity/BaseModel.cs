@@ -8,8 +8,8 @@ using DBAccess.Reflection;
 
 namespace DBAccess.Entity
 {
-    //[AopEntity]
-    public class BaseModel //: ContextBoundObject
+    [AopEntity]
+    public class BaseModel : ContextBoundObject
     {
         /// <summary>
         /// 表名
