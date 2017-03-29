@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 //
-using System.Linq.Expressions;
 using DBAccess.Entity;
 
 namespace DBAccess.SQLContext
@@ -14,6 +13,6 @@ namespace DBAccess.SQLContext
     /// </summary>
     public interface ISqlContext<T> where T : Entity.BaseModel, new()
     {
-        SQL_Container GetSqlString(MemberInitExpression mie);
+        SQL_Container GetSqlString(T entity);
     }
 }

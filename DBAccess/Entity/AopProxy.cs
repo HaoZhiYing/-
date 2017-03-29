@@ -35,17 +35,13 @@ namespace DBAccess.Entity
             }
             else if (msg is IMethodCallMessage) //如果是方法调用（属性也是方法调用的一种）
             {
-                IMethodCallMessage callMsg = msg as IMethodCallMessage;
-                object[] args = callMsg.Args;
+                var callMsg = msg as IMethodCallMessage;
+                var args = callMsg.Args;
                 IMessage message;
                 try
                 {
                     if (callMsg.MethodName.StartsWith("set_") && args.Length == 1)
                     {
-                        //这里检测到是set方法，然后应怎么调用对象的其它方法呢？
-                        //dynamic dy = ServerType.BaseType.GetMethod("Set", BindingFlags.NonPublic | BindingFlags.Instance);
-                        //dy.Invoke(GetUnwrappedServer(), new object[] { callMsg.MethodName.Substring(4), args[0] });
-                        //在构造函数中，根据传进来的serverType，获取到SetXX的方法MethodInfo：  调用 Set 函数
                         var method = ServerType.BaseType.GetMethod("Set", BindingFlags.NonPublic | BindingFlags.Instance);
                         method.Invoke(GetUnwrappedServer(), new object[] { callMsg.MethodName.Substring(4), args[0] });//对属性进行调用
                     }
@@ -60,6 +56,7 @@ namespace DBAccess.Entity
             }
             return msg;
         }
+
 
 
     }

@@ -18,6 +18,7 @@ namespace DBAccess.SQLContext.Context
     public class AddSqlString<T> : AbstractSqlContext<T> where T : BaseModel, new()
     {
         //INSERT INTO TAB COL VALUES () 
+        List<SqlParameter> list_sqlpar = new List<SqlParameter>();
 
         public AddSqlString() { }
 
@@ -26,43 +27,26 @@ namespace DBAccess.SQLContext.Context
         /// </summary>
         /// <param name="mie"></param>
         /// <returns></returns>
-        public override SQL_Container GetSqlString(MemberInitExpression mie)
+        public override SQL_Container GetSqlString(T entity)
         {
-            return this.GetSQL(mie);
+            return this.GetSQL(entity);
         }
 
-        public override SQL_Container GetSqlString<M>(MemberInitExpression mie, Expression<Func<M, bool>> where)
+        private SQL_Container GetSQL(T entity)
         {
-            throw new NotImplementedException();
-        }
-
-        public override SQL_Container GetSqlString(MemberInitExpression mie, T where)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override SQL_Container GetSqlString(MemberInitExpression mie, string where)
-        {
-            throw new NotImplementedException();
-        }
-
-        private SQL_Container GetSQL(MemberInitExpression mie)
-        {
-            var TableName = mie.Type.Name;
+            var TableName = entity.TableName;
             var col = new List<string>();
             var val = new List<string>();
-            var li = new List<SQL_Container>();
-            var list = mie.Bindings.ToList().FindAll(item => ExpressionHelper.DealExpress(((MemberAssignment)item).Expression) != null && ExpressionHelper.DealExpress(((MemberAssignment)item).Expression) != "null");
-            SqlParameter[] sparr = new SqlParameter[list.Count];
-            foreach (MemberAssignment item in list)
+            var list = entity.fileds.ToList();
+            foreach (var item in list)
             {
-                var value = ExpressionHelper.DealExpress(item.Expression);
-                var key = item.Member.Name;
+                var value = item.Value;
+                var key = item.Key;
                 col.Add(key); val.Add("@" + key + "");
-                sparr.SetValue(new SqlParameter() { ParameterName = key, Value = value }, list.IndexOf(item));
+                list_sqlpar.Add(new SqlParameter() { ParameterName = key, Value = value });
             }
             string sql = string.Format(" INSERT INTO {0} ({1}) VALUES ({2}) ", TableName, string.Join(",", col), string.Join(",", val));
-            return new SQL_Container(sql, sparr);
+            return new SQL_Container(sql, list_sqlpar.ToArray());
         }
 
     }

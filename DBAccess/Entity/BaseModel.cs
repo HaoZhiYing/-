@@ -19,10 +19,10 @@ namespace DBAccess.Entity
         /// <summary>
         /// 设置不验证的字段集合
         /// </summary>
-        public List<string> NotChecks = new List<string>();
+        public readonly List<string> NotChecks = new List<string>();
 
         /// <summary>
-        /// 
+        /// 属性set临时容器
         /// </summary>
         public readonly Dictionary<string, object> fileds = new Dictionary<string, object>();
 
@@ -38,19 +38,31 @@ namespace DBAccess.Entity
             EH = new EntityHelper<BaseModel>();
         }
 
-        private void Set(string FiledName, object value)
+        /// <summary>
+        /// set 
+        /// </summary>
+        /// <param name="FiledName"></param>
+        /// <param name="Value"></param>
+        private void Set(string FiledName, object Value)
         {
-            //if (PropertyValues == null)
-            //    PropertyValues = "";
-            if (value != null && value is string)
+            if (Value != null && Value is string)
             {
-                if (value.Equals("null"))
-                    value = DBNull.Value;
+                if (Value.Equals("null"))
+                    Value = null;
             }
             if (fileds.ContainsKey(FiledName))
-                fileds[FiledName] = value;
+                fileds[FiledName] = Value;
             else
-                fileds.Add(FiledName, value);
+                fileds.Add(FiledName, Value);
+        }
+
+        /// <summary>
+        /// 添加不验证字段
+        /// </summary>
+        public void AddNotChecks(params string[] fileds)
+        {
+            foreach (var item in fileds)
+                NotChecks.Add(item);
         }
 
     }

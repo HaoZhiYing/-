@@ -32,21 +32,6 @@ namespace DBAccess.SQLContext.Context
             throw new NotImplementedException();
         }
 
-        public override SQL_Container GetSqlString<M>(MemberInitExpression mie, Expression<Func<M, bool>> where)
-        {
-            return this.GetSQL(mie, " AND " + this.GetWhereString(where, ref list_sqlpar));
-        }
-
-        public override SQL_Container GetSqlString(MemberInitExpression mie, T where)
-        {
-            return this.GetSQL(mie, this.GetWhereString(where, ref list_sqlpar));
-        }
-
-        public override SQL_Container GetSqlString(MemberInitExpression mie, string where)
-        {
-            return this.GetSQL(mie, where);
-        }
-
         private SQL_Container GetSQL(MemberInitExpression mie, string where)
         {
             var TableName = mie.Type.Name;
