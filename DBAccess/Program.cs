@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+//
+using DBAccess;
 using DBAccess.Model;
 
 namespace DBAccess
@@ -30,8 +32,8 @@ namespace DBAccess
             user.cUsers_LoginPwd = "123456";
             user.cUsers_Name = "haha";
             user.uUsers_ID = Guid.Parse("306de9a2-920f-43a7-aed4-83e6ad7aca61");
-            user.dUsers_CreateTime = DateTime.Now;
             var di = user.fileds;
+            DBContext db = new DBContext();
 
             Console.WriteLine(" 耗时：" + s.ElapsedMilliseconds);
             Console.ReadKey();

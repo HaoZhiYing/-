@@ -7,15 +7,20 @@ using System.Threading.Tasks;
 using System.Linq.Expressions;
 using DBAccess.Entity;
 using DBAccess.SQLContext;
+using System.Data;
+using System.Web.Script.Serialization;
 
-namespace HZYEntityFrameWork
+namespace DBAccess
 {
     public class DBContext
     {
+        public string ErrorMessge = string.Empty;
+        public JavaScriptSerializer jss;
         protected AddContext<BaseModel> add;
         protected EditContext<BaseModel> edit;
         protected DeleteContext<BaseModel> delete;
         protected FindContext<BaseModel> find;
+        protected CommitContext commit;
 
         private string _ConnectionString { get; set; }
 
@@ -29,6 +34,8 @@ namespace HZYEntityFrameWork
             edit = new EditContext<BaseModel>(_ConnectionString);
             delete = new DeleteContext<BaseModel>(_ConnectionString);
             find = new FindContext<BaseModel>(_ConnectionString);
+            jss = new JavaScriptSerializer();
+            commit = new CommitContext(_ConnectionString);
         }
 
         /// <summary>
@@ -42,96 +49,217 @@ namespace HZYEntityFrameWork
             edit = new EditContext<BaseModel>(_ConnectionString);
             delete = new DeleteContext<BaseModel>(_ConnectionString);
             find = new FindContext<BaseModel>(_ConnectionString);
+            jss = new JavaScriptSerializer();
+            commit = new CommitContext(_ConnectionString);
         }
 
         public object Add(BaseModel entity)
         {
-            return add.Add(entity);
+            try
+            {
+                return add.Add(entity);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return null;
+            }
+
         }
 
         public object Add(BaseModel entity, ref List<SQL_Container> li)
         {
-            return add.Add(entity, ref li);
+            try
+            {
+                return add.Add(entity, ref li);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return null;
+            }
         }
 
         public bool Edit(BaseModel entity)
         {
-            return edit.Edit(entity);
+            try
+            {
+                return edit.Edit(entity);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
         public bool Edit(BaseModel entity, string where)
         {
-            return edit.Edit(entity, where);
+            try
+            {
+                return edit.Edit(entity, where);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
         public bool Edit(BaseModel entity, BaseModel where)
         {
-            return edit.Edit(entity, where);
+            try
+            {
+                return edit.Edit(entity, where);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
         public bool Edit<M>(BaseModel entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
-            return edit.Edit(entity, where);
+            try
+            {
+                return edit.Edit(entity, where);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
         public bool Edit(BaseModel entity, ref List<SQL_Container> li)
         {
-            return edit.Edit(entity, ref li);
+            try
+            {
+                return edit.Edit(entity, ref li);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
         public bool Edit(BaseModel entity, string where, ref List<SQL_Container> li)
         {
-            return edit.Edit(entity, where, ref li);
+            try
+            {
+                return edit.Edit(entity, where, ref li);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
         public bool Edit(BaseModel entity, BaseModel where, ref List<SQL_Container> li)
         {
-            return edit.Edit(entity, where, ref li);
+            try
+            {
+                return edit.Edit(entity, where, ref li);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
         public bool Edit<M>(BaseModel entity, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
         {
-            return edit.Edit(entity, where, ref li);
+            try
+            {
+                return edit.Edit(entity, where, ref li);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
         public bool Delete(BaseModel entity)
         {
-            return delete.Delete(entity);
+            try
+            {
+                return delete.Delete(entity);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
-        public bool Delete(BaseModel entity, string where)
+        public bool Delete<M>(string where) where M : BaseModel, new()
         {
-            return delete.Delete(entity, where);
+            try
+            {
+                return delete.Delete<M>(where);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
-        public bool Delete(BaseModel entity, BaseModel where)
+        public bool Delete<M>(Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
-            return delete.Delete(entity, where);
-        }
-
-        public bool Delete<M>(BaseModel entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
-        {
-            return delete.Delete(entity, where);
+            try
+            {
+                return delete.Delete(where);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
         public bool Delete(BaseModel entity, ref List<SQL_Container> li)
         {
-            return delete.Delete(entity, ref li);
+            try
+            {
+                return delete.Delete(entity, ref li);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
-        public bool Delete(BaseModel entity, string where, ref List<SQL_Container> li)
+        public bool Delete<M>(string where, ref List<SQL_Container> li) where M : BaseModel, new()
         {
-            return delete.Delete(entity, where, ref li);
+            try
+            {
+                return delete.Delete<M>(where, ref li);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
-        public bool Delete(BaseModel entity, BaseModel where, ref List<SQL_Container> li)
+        public bool Delete<M>(Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
         {
-            return delete.Delete(entity, where, ref li);
-        }
-
-        public bool Delete<M>(BaseModel entity, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
-        {
-            return delete.Delete(entity, where, ref li);
+            try
+            {
+                return delete.Delete(where, ref li);
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
         }
 
         public M Find<M>(M entity) where M : BaseModel, new()
@@ -144,14 +272,133 @@ namespace HZYEntityFrameWork
             return find.Find<M>(where);
         }
 
+        public M Find<M>(Expression<Func<M, bool>> where) where M : BaseModel, new()
+        {
+            return find.Find<M>(where);
+        }
 
+        public DataTable Find<M>(M entity, string OrderBy = null) where M : BaseModel, new()
+        {
+            return find.Find<M>(entity, OrderBy);
+        }
 
-        //public M Find<M>(M where, string orderby = "") where M : BaseModel, new()
-        //{
-        //    return find.Find<M>(where, orderby);
-        //}
+        public List<M> FindToList<M>(M entity, string OrderBy = null) where M : BaseModel, new()
+        {
+            return find.FindToList<M>(entity, OrderBy);
+        }
 
+        public List<M> FindToList<M>(DataTable dt) where M : BaseModel, new()
+        {
+            return find.FindToList<M>(dt);
+        }
 
+        public DataTable Find(string SQL)
+        {
+            return find.Find(SQL);
+        }
+
+        public object FINDToObj(string SQL)
+        {
+            return find.FINDToObj(SQL);
+        }
+
+        public DataTable Find(string SQL, int PageIndex, int PageSize, out int PageCount, out int Counts)
+        {
+            return find.Find(SQL, PageIndex, PageSize, out PageCount, out Counts);
+        }
+
+        public PagingEntity Find(string SQL, int PageIndex, int PageSize)
+        {
+            return find.Find(SQL, PageIndex, PageSize);
+        }
+
+        /// <summary>
+        /// 将datarow 转换为Model
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dr"></param>
+        /// <returns></returns>
+        public T DataRowToModel<T>(DataRow dr) where T : BaseModel
+        {
+            return find.ToModel(dr, (T)Activator.CreateInstance(typeof(T)));
+        }
+
+        /// <summary>
+        /// 根据 DataTable 获取 List<Dictionary<string,object>> 类型
+        /// </summary>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        public List<Dictionary<string, object>> GetList(DataTable table)
+        {
+            return GetDataTableToList(table);
+        }
+
+        /// <summary>
+        /// Json 转换为 List<T>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="Json"></param>
+        /// <returns></returns>
+        public List<T> JsonToList<T>(string Json)
+        {
+            T[] str = jss.Deserialize(Json, typeof(T[])) as T[];
+            return new List<T>(str);
+        }
+
+        /// <summary>
+        /// 根据datatable获取List
+        /// </summary>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        private List<Dictionary<string, object>> GetDataTableToList(DataTable table)
+        {
+            List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
+            Dictionary<string, object> di = new Dictionary<string, object>();
+            foreach (DataRow rowItem in table.Rows)
+            {
+                di = new Dictionary<string, object>();
+                //给objT的所有属性赋值
+                foreach (DataColumn columnItem in table.Columns)
+                {
+                    if (columnItem.DataType == typeof(DateTime))
+                        di.Add(columnItem.ColumnName, Convert.ToDateTime(rowItem[columnItem.ColumnName]).ToString("yyyy-MM-dd HH:mm:ss"));
+                    else
+                        di.Add(columnItem.ColumnName, rowItem[columnItem.ColumnName]);
+                }
+                list.Add(di);
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 提交事务
+        /// </summary>
+        /// <returns></returns>
+        public bool Commit(List<SQL_Container> li)
+        {
+            try
+            {
+                if (commit.COMMIT(li))
+                    return true;
+                SetError("操作失败");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                SetError(ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 设置错误消息
+        /// </summary>
+        /// <param name="Error"></param>
+        private void SetError(string Error)
+        {
+            ErrorMessge = string.Empty;
+            ErrorMessge = Error.Replace("\r\n", "<br />");
+        }
 
     }
 }

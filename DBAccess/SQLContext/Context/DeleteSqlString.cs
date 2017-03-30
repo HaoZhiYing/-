@@ -28,24 +28,24 @@ namespace DBAccess.SQLContext.Context
         /// </summary>
         /// <param name="mie"></param>
         /// <returns></returns>
-        public override SQL_Container GetSqlString(T entity)
+        public override SQL_Container GetSqlString(T where)
         {
-            return this.GetSQL(entity);
+            return this.GetSQL(where);
         }
 
-        public SQL_Container GetSqlString<M>(T entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
+        public SQL_Container GetSqlString<M>(Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
-            return this.GetSQL(entity, " AND " + this.GetWhereString(where, ref list_sqlpar));
+            return this.GetSQL<M>(" AND " + this.GetWhereString(where, ref list_sqlpar));
         }
 
-        public SQL_Container GetSqlString<M>(T entity, M where) where M : BaseModel, new()
-        {
-            return this.GetSQL(entity, this.GetWhereString(where, ref list_sqlpar));
-        }
+        //public SQL_Container GetSqlString<M>(M where) where M : BaseModel, new()
+        //{
+        //    return this.GetSQL<M>(this.GetWhereString(where, ref list_sqlpar));
+        //}
 
-        public SQL_Container GetSqlString(T entity, string where)
+        public SQL_Container GetSqlString<M>(string where) where M : BaseModel, new()
         {
-            return this.GetSQL(entity, where);
+            return this.GetSQL<M>(where);
         }
 
         private SQL_Container GetSQL(T entity)
@@ -65,9 +65,10 @@ namespace DBAccess.SQLContext.Context
             return new SQL_Container(sql, list_sqlpar.ToArray());
         }
 
-        private SQL_Container GetSQL(T entity, string where)
+        private SQL_Container GetSQL<M>(string where) where M : BaseModel, new()
         {
-            var TableName = entity.TableName;
+            M m = (M)Activator.CreateInstance(typeof(M));
+            var TableName = m.TableName;
             string sql = string.Format(" DELETE FROM {0} WHERE 1=1 {1} ", TableName, where);
             return new SQL_Container(sql, list_sqlpar.ToArray());
         }

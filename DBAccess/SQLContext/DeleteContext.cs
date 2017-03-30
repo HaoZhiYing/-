@@ -31,19 +31,14 @@ namespace DBAccess.SQLContext
             return sqlstring.GetSqlString(entity);
         }
 
-        private SQL_Container GetSql(T entity, string where)
+        private SQL_Container GetSql<M>(string where) where M : BaseModel, new()
         {
-            return sqlstring.GetSqlString(entity, where);
+            return sqlstring.GetSqlString<M>(where);
         }
 
-        private SQL_Container GetSql(T entity, T where)
+        private SQL_Container GetSql<M>(Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
-            return sqlstring.GetSqlString(entity, where);
-        }
-
-        private SQL_Container GetSql(T entity, Expression<Func<T, bool>> where)
-        {
-            return sqlstring.GetSqlString(entity, where);
+            return sqlstring.GetSqlString<M>(where);
         }
 
         public bool Delete(T entity)
@@ -55,27 +50,19 @@ namespace DBAccess.SQLContext
                 return false;
         }
 
-        public bool Delete(T entity, string where)
+        public bool Delete<M>(string where) where M : BaseModel, new()
         {
-            var sql = this.GetSql(entity, where);
+            var sql = this.GetSql<M>(where);
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return true;
             else
                 return false;
         }
 
-        public bool Delete(T entity, T where)
-        {
-            var sql = this.GetSql(entity, where);
-            if (commit.COMMIT(new List<SQL_Container>() { sql }))
-                return true;
-            else
-                return false;
-        }
 
-        public bool Delete<M>(T model, Expression<Func<M, bool>> where) where M : BaseModel, new()
+        public bool Delete<M>(Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
-            var sql = sqlstring.GetSqlString(model, where);
+            var sql = sqlstring.GetSqlString(where);
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return true;
             else
@@ -89,23 +76,16 @@ namespace DBAccess.SQLContext
             return true;
         }
 
-        public bool Delete(T entity, string where, ref List<SQL_Container> li)
+        public bool Delete<M>(string where, ref List<SQL_Container> li) where M : BaseModel, new()
         {
-            var sql = this.GetSql(entity, where);
+            var sql = this.GetSql<M>(where);
             li.Add(sql);
             return true;
         }
 
-        public bool Delete(T entity, T where, ref List<SQL_Container> li)
+        public bool Delete<M>(Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
         {
-            var sql = this.GetSql(entity, where);
-            li.Add(sql);
-            return true;
-        }
-
-        public bool Delete<M>(T model, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
-        {
-            var sql = sqlstring.GetSqlString(model, where);
+            var sql = sqlstring.GetSqlString(where);
             li.Add(sql);
             return true;
         }

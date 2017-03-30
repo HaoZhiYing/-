@@ -46,7 +46,7 @@ namespace DBAccess.SQLContext
                 //_intid = " SELECT SCOPE_IDENTITY() ";//intID = " SELECT @@IDENTITY ";
             }
             else
-                throw new ArgumentException(" 实体中的主键类型不支持 请使用 Guid? 或者 int? 类型 ");
+                throw new ArgumentException(" 实体中的主键类型不支持 请使用 Guid? 类型 ");
             dy.T = entity; dy.id = KeyID;
             return dy;
         }

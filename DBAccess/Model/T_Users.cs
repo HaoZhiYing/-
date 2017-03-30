@@ -15,6 +15,7 @@ namespace DBAccess.Model
         public T_Users()
         {
             this.TableName = "T_Users";
+            this.NotFiled.Add("dUsers_CreateTime");
         }
 
         [Filed(DisplayName = "ID", IsPrimaryKey = true)]

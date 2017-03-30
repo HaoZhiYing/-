@@ -31,6 +31,11 @@ namespace DBAccess.Entity
         /// </summary>
         public readonly EntityHelper<BaseModel> EH = new EntityHelper<BaseModel>();
 
+        /// <summary>
+        /// 放置不操作的字段
+        /// </summary>
+        public List<string> NotFiled = new List<string>();
+
         public BaseModel()
         {
             NotChecks = new List<string>();
@@ -45,15 +50,77 @@ namespace DBAccess.Entity
         /// <param name="Value"></param>
         private void Set(string FiledName, object Value)
         {
-            if (Value != null && Value is string)
+            var isYes = NotFiled.Contains(FiledName);
+            if (!isYes)
             {
-                if (Value.Equals("null"))
-                    Value = null;
+                if (Value != null && Value is string)
+                {
+                    if (Value.Equals("null"))
+                        Value = null;
+                }
+                if (fileds.ContainsKey(FiledName))
+                    fileds[FiledName] = Value;
+                else
+                    fileds.Add(FiledName, Value);
             }
+        }
+
+        /// <summary>
+        /// 此函数用在属性set时  如下用法:
+        ///  public string cMenu_Name
+        /// {
+        ///     set { SetValue(MethodBase.GetCurrentMethod().Name, value); }
+        ///     get { return GetValue<string>(MethodBase.GetCurrentMethod().Name); }
+        /// }
+        /// </summary>
+        /// <param name="FiledName"></param>
+        /// <param name="Value"></param>
+        public void SetValue(string FiledName, object Value)
+        {
+            if (FiledName.StartsWith("set_"))
+                FiledName = FiledName.Replace("set_", "");
+            var isYes = NotFiled.Contains(FiledName);
+            if (!isYes)
+            {
+                if (Value != null && Value is string)
+                {
+                    if (Value.Equals("null"))
+                        Value = null;
+                }
+                if (fileds.ContainsKey(FiledName))
+                    fileds[FiledName] = Value;
+                else
+                    fileds.Add(FiledName, Value);
+            }
+        }
+
+        /// <summary>
+        /// 此函数用在属性get时  如下用法:
+        /// public string cMenu_Name
+        /// {
+        ///     set { SetValue(MethodBase.GetCurrentMethod().Name, value); }
+        ///     get { return GetValue<string>(MethodBase.GetCurrentMethod().Name); }
+        /// }
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="FiledName"></param>
+        /// <returns></returns>
+        public T GetValue<T>(string FiledName)
+        {
+            if (FiledName.StartsWith("get_"))
+                FiledName = FiledName.Replace("get_", "");
             if (fileds.ContainsKey(FiledName))
-                fileds[FiledName] = Value;
-            else
-                fileds.Add(FiledName, Value);
+            {
+                try
+                {
+                    return (T)fileds[FiledName];
+                }
+                catch (Exception ex)
+                {
+                    return default(T);
+                }
+            }
+            return default(T);
         }
 
         /// <summary>
