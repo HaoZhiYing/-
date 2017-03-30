@@ -16,55 +16,59 @@ namespace DBAccess.SQLContext.Context
     /// </summary>
     public class DeleteSqlString<T> : AbstractSqlContext<T> where T : BaseModel, new()
     {
-        List<SqlParameter> list_sqlpar = new List<SqlParameter>();
+        List<SqlParameter> list_sqlpar;
 
-        public DeleteSqlString() { }
+        public DeleteSqlString()
+        {
+            list_sqlpar = new List<SqlParameter>();
+        }
 
         /// <summary>
         /// 获取sql语句
         /// </summary>
         /// <param name="mie"></param>
         /// <returns></returns>
-        public override SQL_Container GetSqlString(MemberInitExpression mie)
+        public override SQL_Container GetSqlString(T entity)
         {
-            return this.GetSQL(mie);
+            return this.GetSQL(entity);
         }
 
-        public override SQL_Container GetSqlString<M>(MemberInitExpression mie, Expression<Func<M, bool>> where)
+        public SQL_Container GetSqlString<M>(T entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
-            return this.GetSQL(mie, " AND " + this.GetWhereString(where, ref list_sqlpar));
+            return this.GetSQL(entity, " AND " + this.GetWhereString(where, ref list_sqlpar));
         }
 
-        public override SQL_Container GetSqlString(MemberInitExpression mie, T where)
+        public SQL_Container GetSqlString<M>(T entity, M where) where M : BaseModel, new()
         {
-            return this.GetSQL(mie, this.GetWhereString(where, ref list_sqlpar));
+            return this.GetSQL(entity, this.GetWhereString(where, ref list_sqlpar));
         }
 
-        public override SQL_Container GetSqlString(MemberInitExpression mie, string where)
+        public SQL_Container GetSqlString(T entity, string where)
         {
-            return this.GetSQL(mie, where);
+            return this.GetSQL(entity, where);
         }
 
-        private SQL_Container GetSQL(MemberInitExpression mie, string where)
+        private SQL_Container GetSQL(T entity)
         {
-            var TableName = mie.Type.Name;
-            string sql = string.Format(" DELETE FROM {0} WHERE 1=1 {2} ", TableName, where);
+            var TableName = entity.TableName;
+            var list = entity.fileds.ToList();
+            var where = new List<string>();
+            foreach (var item in list)
+            {
+                var value = item.Value;
+                var key = item.Key;
+                where.Add(key + "=@" + key + "");
+
+                list_sqlpar.Add(new SqlParameter() { ParameterName = key, Value = value });
+            }
+            string sql = string.Format(" DELETE FROM {0} WHERE 1=1 {2} ", TableName, string.Join(" AND ", where));
             return new SQL_Container(sql, list_sqlpar.ToArray());
         }
 
-        private SQL_Container GetSQL(MemberInitExpression mie)
+        private SQL_Container GetSQL(T entity, string where)
         {
-            var TableName = mie.Type.Name;
-            var where = new List<string>();
-            var list = mie.Bindings.ToList();
-            foreach (MemberAssignment item in list)
-            {
-                var value = ExpressionHelper.DealExpress(item.Expression);
-                var key = item.Member.Name;
-                where.Add(key + "=@" + key + "");
-                list_sqlpar.Add(new SqlParameter() { ParameterName = key, Value = value });
-            }
-            string sql = string.Format(" DELETE FROM {0} WHERE 1=1 {1} ", TableName, string.Join(",", where));
+            var TableName = entity.TableName;
+            string sql = string.Format(" DELETE FROM {0} WHERE 1=1 {1} ", TableName, where);
             return new SQL_Container(sql, list_sqlpar.ToArray());
         }
 

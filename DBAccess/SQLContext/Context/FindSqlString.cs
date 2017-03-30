@@ -13,58 +13,65 @@ namespace DBAccess.SQLContext.Context
 {
     public class FindSqlString<T> : AbstractSqlContext<T> where T : BaseModel, new()
     {
-        List<SqlParameter> list_sqlpar = new List<SqlParameter>();
+        List<SqlParameter> list_sqlpar;
 
-        public FindSqlString() { }
+        public FindSqlString()
+        {
+            list_sqlpar = new List<SqlParameter>();
+        }
+
+        public string OrderBy = string.Empty;
 
         /// <summary>
         /// 获取sql语句
         /// </summary>
         /// <param name="mie"></param>
         /// <returns></returns>
-        public override SQL_Container GetSqlString(MemberInitExpression mie)
+        public override SQL_Container GetSqlString(T entity)
         {
-            throw new NotImplementedException();
+            throw new Exception();
         }
 
-        public override SQL_Container GetSqlString<M>(MemberInitExpression mie, Expression<Func<M, bool>> where)
+        public SQL_Container GetSqlString<M>(M entity) where M : BaseModel, new()
         {
-            return this.GetSQL(mie, " AND " + this.GetWhereString(where, ref list_sqlpar));
+            return this.GetSQL(entity);
         }
 
-        public override SQL_Container GetSqlString(MemberInitExpression mie, T where)
+        public SQL_Container GetSqlString<M>(Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
-            return this.GetSQL(mie, this.GetWhereString(where, ref list_sqlpar));
+            return this.GetSQL<M>(" AND " + this.GetWhereString(where, ref list_sqlpar));
         }
 
-        public override SQL_Container GetSqlString(MemberInitExpression mie, string where)
+        public SQL_Container GetSqlString<M>(string where) where M : BaseModel, new()
         {
-            return this.GetSQL(mie, where);
+            return this.GetSQL<M>(where);
         }
 
-
-        public SQL_Container GetSqlStringOrderBy(MemberInitExpression mie, string orderby)
+        public SQL_Container GetSQL<M>(M entity) where M : BaseModel, new()
         {
-            return this.GetSQL(mie, ExpressionHelper.DealExpress(mie));
-        }
-
-        private SQL_Container GetSQL(MemberInitExpression mie, string where)
-        {
-            var list_par = new List<SqlParameter>();
-            var TableName = mie.Type.Name;
-            var list = mie.Bindings.ToList().FindAll(item => ExpressionHelper.DealExpress(((MemberAssignment)item).Expression) != null && ExpressionHelper.DealExpress(((MemberAssignment)item).Expression) != "null");
-
-            string sql = string.Format(" SELECT {0} FROM {1} WHERE 1=1 {2}", "*", TableName, where);
+            var TableName = entity.TableName;
+            var list = entity.fileds.ToList();
+            var where = new List<string>();
+            foreach (var item in list)
+            {
+                var value = item.Value;
+                var key = item.Key;
+                where.Add(key + "=@" + key + "");
+            }
+            OrderBy = string.IsNullOrEmpty(OrderBy) ? "" : " Order By " + OrderBy;
+            string sql = string.Format(" SELECT {0} FROM {1} WHERE 1=1 {2} {3}", "*", TableName, string.Join(" AND ", where), OrderBy);
             return new SQL_Container(sql, list_sqlpar.ToArray());
         }
 
-        private SQL_Container GetSQL(MemberInitExpression mie, string where, string orderby)
+
+        private SQL_Container GetSQL<M>(string where) where M : BaseModel, new()
         {
-            var TableName = mie.Type.Name;
-            string sql = string.Format(" SELECT {0} FROM {1} WHERE 1=1 {2}", "*", TableName, where);
+            M m = (M)Activator.CreateInstance(typeof(M));
+            var TableName = m.TableName;
+            OrderBy = string.IsNullOrEmpty(OrderBy) ? "" : " Order By " + OrderBy;
+            string sql = string.Format(" SELECT {0} FROM {1} WHERE 1=1 {2} {3}", "*", TableName, where, OrderBy);
             return new SQL_Container(sql, list_sqlpar.ToArray());
         }
-
 
     }
 }

@@ -13,44 +13,37 @@ namespace DBAccess.SQLContext
 {
     public class DeleteContext<T> where T : BaseModel, new()
     {
-        Context.DeleteSqlString<T> sqlstring = new Context.DeleteSqlString<T>();
-        CommitContext commit = new CommitContext();
-        public DeleteContext() { }
+        Context.DeleteSqlString<T> sqlstring;
+        CommitContext commit;
+        private DeleteContext() { }
+
+        private string _ConnectionString { get; set; }
+
+        public DeleteContext(string ConnectionString)
+        {
+            _ConnectionString = ConnectionString;
+            commit = new CommitContext(_ConnectionString);
+            sqlstring = new Context.DeleteSqlString<T>();
+        }
 
         private SQL_Container GetSql(T entity)
         {
-            var list = new List<MemberBinding>();
-            var pK = entity.EH.GetPropertyInfo(entity, entity.EH.GetKeyName(entity));
-            var fileds = entity.EH.GetAllPropertyInfo(entity).FindAll(item => item.GetValue(entity) != null || item.GetValue(entity) != "null");
-            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
-            return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list), " AND " + pK.Name + "='" + pK.GetValue(entity) + "' ");
+            return sqlstring.GetSqlString(entity);
         }
 
         private SQL_Container GetSql(T entity, string where)
         {
-            var list = new List<MemberBinding>();
-            var pK = entity.EH.GetPropertyInfo(entity, entity.EH.GetKeyName(entity));
-            var fileds = entity.EH.GetAllPropertyInfo(entity).FindAll(item => item.GetValue(entity) != null || item.GetValue(entity) != "null");
-            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
-            return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list), where);
+            return sqlstring.GetSqlString(entity, where);
         }
 
         private SQL_Container GetSql(T entity, T where)
         {
-            var list = new List<MemberBinding>();
-            var pK = entity.EH.GetPropertyInfo(entity, entity.EH.GetKeyName(entity));
-            var fileds = entity.EH.GetAllPropertyInfo(entity).FindAll(item => item.GetValue(entity) != null || item.GetValue(entity) != "null");
-            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
-            return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list), where);
+            return sqlstring.GetSqlString(entity, where);
         }
 
         private SQL_Container GetSql(T entity, Expression<Func<T, bool>> where)
         {
-            var list = new List<MemberBinding>();
-            var pK = entity.EH.GetPropertyInfo(entity, entity.EH.GetKeyName(entity));
-            var fileds = entity.EH.GetAllPropertyInfo(entity).FindAll(item => item.GetValue(entity) != null || item.GetValue(entity) != "null");
-            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
-            return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list), where);
+            return sqlstring.GetSqlString(entity, where);
         }
 
         public bool Delete(T entity)
@@ -80,9 +73,9 @@ namespace DBAccess.SQLContext
                 return false;
         }
 
-        public bool Delete<M>(Expression<Func<M, M>> model, Expression<Func<M, bool>> where) where M : BaseModel, new()
+        public bool Delete<M>(T model, Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
-            var sql = sqlstring.GetSqlString(model.Body as MemberInitExpression, where);
+            var sql = sqlstring.GetSqlString(model, where);
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return true;
             else
@@ -110,9 +103,9 @@ namespace DBAccess.SQLContext
             return true;
         }
 
-        public bool Delete<M>(Expression<Func<M, M>> model, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
+        public bool Delete<M>(T model, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
         {
-            var sql = sqlstring.GetSqlString(model.Body as MemberInitExpression, where);
+            var sql = sqlstring.GetSqlString(model, where);
             li.Add(sql);
             return true;
         }

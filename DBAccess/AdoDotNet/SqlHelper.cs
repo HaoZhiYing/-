@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Data.Common;
-//using Microsoft.Practices.EnterpriseLibrary.Data;
+using Microsoft.Practices.EnterpriseLibrary.Data;
 
 namespace DBAccess.AdoDotNet
 {
@@ -19,14 +19,14 @@ namespace DBAccess.AdoDotNet
         private static DbCommand dbcom = null;
         private static string connName = "ConnectionString";
         //数据库连接字符串(web.config来配置)
-        //public static Database dbs = DatabaseFactory.CreateDatabase(connName);
+        public static Database dbs = DatabaseFactory.CreateDatabase(connName);
         private SqlHelper()
         {
             dbcom = null;
             if (string.IsNullOrEmpty(connName))
                 connName = "ConnectionString";
-            //if (dbs == null)
-                //dbs = DatabaseFactory.CreateDatabase(connName);
+            if (dbs == null)
+                dbs = DatabaseFactory.CreateDatabase(connName);
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace DBAccess.AdoDotNet
             return System.Configuration.ConfigurationManager.ConnectionStrings[connName].ToString();
         }
 
-  /*      #region  分页查询
+        #region  分页查询
 
         /// <summary>
         /// 分页查询【存储过程】
@@ -52,11 +52,11 @@ namespace DBAccess.AdoDotNet
         public static DataTable SysPageList(string SQL, int PAGE, int PAGESIZE, out int PAGECOUNT, out int RECORDCOUNT)
         {
             SqlParameter[] parameters ={ new SqlParameter("@SQL",SqlDbType.Text,20000),//  
-                new SqlParameter("@PAGE",SqlDbType.Int),// -- 
-                new SqlParameter("@PAGESIZE",SqlDbType.Int),// - 
-                new SqlParameter("@PAGECOUNT",SqlDbType.Int),//-- 
-                new SqlParameter("@RECORDCOUNT",SqlDbType.Int)//-- 
-                        };
+                      new SqlParameter("@PAGE",SqlDbType.Int),// -- 
+                      new SqlParameter("@PAGESIZE",SqlDbType.Int),// - 
+                      new SqlParameter("@PAGECOUNT",SqlDbType.Int),//-- 
+                      new SqlParameter("@RECORDCOUNT",SqlDbType.Int)//-- 
+                              };
             parameters[0].Value = SQL;
             parameters[1].Value = PAGE;
             parameters[2].Value = PAGESIZE;
@@ -105,7 +105,7 @@ namespace DBAccess.AdoDotNet
             }
         }
 
-        #endregion  分页查询        */
+        #endregion  分页查询
 
         #region private utility methods & constructors
 

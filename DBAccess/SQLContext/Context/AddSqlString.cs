@@ -18,9 +18,12 @@ namespace DBAccess.SQLContext.Context
     public class AddSqlString<T> : AbstractSqlContext<T> where T : BaseModel, new()
     {
         //INSERT INTO TAB COL VALUES () 
-        List<SqlParameter> list_sqlpar = new List<SqlParameter>();
+        List<SqlParameter> list_sqlpar;
 
-        public AddSqlString() { }
+        public AddSqlString()
+        {
+            list_sqlpar = new List<SqlParameter>();
+        }
 
         /// <summary>
         /// 获取sql语句

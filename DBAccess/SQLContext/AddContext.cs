@@ -13,16 +13,22 @@ namespace DBAccess.SQLContext
 {
     public class AddContext<T> where T : BaseModel, new()
     {
-        Context.AddSqlString<T> add = new Context.AddSqlString<T>();
-        CommitContext commit = new CommitContext();
-        public AddContext() { }
+        Context.AddSqlString<T> add;
+        CommitContext commit;
+        private AddContext() { }
+
+        private string _ConnectionString { get; set; }
+
+        public AddContext(string ConnectionString)
+        {
+            _ConnectionString = ConnectionString;
+            commit = new CommitContext(_ConnectionString);
+            add = new Context.AddSqlString<T>();
+        }
 
         private SQL_Container GetSql(T entity)
         {
-            var list = new List<MemberBinding>();
-            var fileds = entity.EH.GetAllPropertyInfo(entity);
-            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
-            return add.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list));
+            return add.GetSqlString(entity);
         }
 
         private dynamic GetModel(T entity)

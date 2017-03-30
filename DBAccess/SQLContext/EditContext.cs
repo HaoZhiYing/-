@@ -13,45 +13,41 @@ namespace DBAccess.SQLContext
 {
     public class EditContext<T> where T : BaseModel, new()
     {
-        Context.EditSqlString<T> sqlstring = new Context.EditSqlString<T>();
-        CommitContext commit = new CommitContext();
-        public EditContext() { }
+        Context.EditSqlString<T> sqlstring;
+        CommitContext commit;
+        private EditContext() { }
+
+        private string _ConnectionString { get; set; }
+
+        public EditContext(string ConnectionString)
+        {
+            _ConnectionString = ConnectionString;
+            commit = new CommitContext(_ConnectionString);
+            sqlstring = new Context.EditSqlString<T>();
+        }
 
         private SQL_Container GetSql(T entity)
         {
-            var list = new List<MemberBinding>();
-            var pK = entity.EH.GetPropertyInfo(entity, entity.EH.GetKeyName(entity));
-            var fileds = entity.EH.GetAllPropertyInfo(entity);
-            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
-            return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list), " AND " + pK.Name + "='" + pK.GetValue(entity) + "' ");
+            return sqlstring.GetSqlString(entity);
         }
 
         private SQL_Container GetSql(T entity, string where)
         {
-            var list = new List<MemberBinding>();
-            var pK = entity.EH.GetPropertyInfo(entity, entity.EH.GetKeyName(entity));
-            var fileds = entity.EH.GetAllPropertyInfo(entity);
-            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
-            return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list), where);
+            return sqlstring.GetSqlString(entity, where);
         }
 
-        private SQL_Container GetSql(T entity, T where)
+        private SQL_Container GetSql<M>(T entity, M where) where M : BaseModel, new()
         {
-            var list = new List<MemberBinding>();
-            var pK = entity.EH.GetPropertyInfo(entity, entity.EH.GetKeyName(entity));
-            var fileds = entity.EH.GetAllPropertyInfo(entity);
-            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
-            return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list), where);
+            return sqlstring.GetSqlString(entity, where);
         }
 
-        private SQL_Container GetSql(T entity, Expression<Func<T, bool>> where)
+        private SQL_Container GetSql<M>(T entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
-            var list = new List<MemberBinding>();
-            var pK = entity.EH.GetPropertyInfo(entity, entity.EH.GetKeyName(entity));
-            var fileds = entity.EH.GetAllPropertyInfo(entity);
-            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(entity), item.PropertyType)));
-            return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(entity.GetType()), list), where);
+            return sqlstring.GetSqlString(entity, where);
         }
+
+
+
 
         public bool Edit(T entity)
         {
@@ -77,9 +73,9 @@ namespace DBAccess.SQLContext
             return false;
         }
 
-        public bool Edit<M>(Expression<Func<M, M>> set, Expression<Func<M, bool>> where) where M : BaseModel, new()
+        public bool Edit<M>(T entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
-            var sql = sqlstring.GetSqlString(set.Body as MemberInitExpression, where);
+            var sql = sqlstring.GetSqlString(entity, where);
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return true;
             return false;
@@ -106,9 +102,9 @@ namespace DBAccess.SQLContext
             return true;
         }
 
-        public bool Edit<M>(Expression<Func<M, M>> set, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
+        public bool Edit<M>(T entity, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
         {
-            var sql = sqlstring.GetSqlString(set.Body as MemberInitExpression, where);
+            var sql = sqlstring.GetSqlString(entity, where);
             li.Add(sql);
             return true;
         }

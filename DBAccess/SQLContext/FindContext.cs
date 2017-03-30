@@ -8,52 +8,212 @@ using System.Linq.Expressions;
 using DBAccess.Reflection;
 using DBAccess.Entity;
 using System.Dynamic;
+using System.Data;
+using DBAccess.AdoDotNet;
 
 namespace DBAccess.SQLContext
 {
     public class FindContext<T> where T : BaseModel, new()
     {
-        Context.FindSqlString<T> sqlstring = new Context.FindSqlString<T>();
-        CommitContext commit = new CommitContext();
-        public FindContext() { }
+        Context.FindSqlString<T> sqlstring;
+        //CommitContext commit;
+        private FindContext() { }
 
-        private SQL_Container GetSql<M>(M where, string orderby) where M : BaseModel, new()
+        private string _ConnectionString { get; set; }
+
+        public FindContext(string ConnectionString)
         {
-            var list = new List<MemberBinding>();
-            var fileds = where.EH.GetAllPropertyInfo(where).FindAll(item => item.GetValue(where) != null || item.GetValue(where) != "null");
-            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(where), item.PropertyType)));
-            return sqlstring.GetSqlStringOrderBy(Expression.MemberInit(Expression.New(where.GetType()), list), orderby);
+            _ConnectionString = ConnectionString;
+            //commit = new CommitContext(_ConnectionString);
+            sqlstring = new Context.FindSqlString<T>();
         }
 
-        private SQL_Container GetSql(T where)
+        private SQL_Container GetSql<M>(M entity) where M : BaseModel, new()
         {
-            var list = new List<MemberBinding>();
-            var fileds = where.EH.GetAllPropertyInfo(where).FindAll(item => item.GetValue(where) != null || item.GetValue(where) != "null");
-            foreach (var item in fileds) list.Add(Expression.Bind(item, Expression.Constant(item.GetValue(where), item.PropertyType)));
-            return sqlstring.GetSqlString(Expression.MemberInit(Expression.New(where.GetType()), list));
+            return sqlstring.GetSqlString(entity);
+        }
+
+        private SQL_Container GetSql<M>(string where) where M : BaseModel, new()
+        {
+            return sqlstring.GetSqlString<M>(where);
+        }
+
+        private SQL_Container GetSql<M>(Expression<Func<M, bool>> where) where M : BaseModel, new()
+        {
+            return sqlstring.GetSqlString<M>(where);
         }
 
 
 
-        public M Find<M>(M entity, string orderby) where M : BaseModel, new()
+        public M Find<M>(M entity) where M : BaseModel, new()
         {
-            var sql = this.GetSql(entity, orderby);
-            return null;
+            var sql = this.GetSql(entity);
+            var dt = SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, sql._SQL, sql._SQL_Parameter).Tables[0];
+            if (dt.Rows.Count == 0)
+                return (M)Activator.CreateInstance(entity.GetType());
+            return ToModel(dt.Rows[0], (M)Activator.CreateInstance(entity.GetType()));
+        }
+
+        public M Find<M>(string where) where M : BaseModel, new()
+        {
+            var sql = this.GetSql<M>(where);
+            var dt = SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, sql._SQL, sql._SQL_Parameter).Tables[0];
+            if (dt.Rows.Count == 0)
+                return (M)Activator.CreateInstance(typeof(M));
+            return ToModel(dt.Rows[0], (M)Activator.CreateInstance(typeof(M)));
+        }
+
+        public M Find<M>(Expression<Func<M, bool>> where) where M : BaseModel, new()
+        {
+            var sql = this.GetSql<M>(where);
+            var dt = SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, sql._SQL, sql._SQL_Parameter).Tables[0];
+            if (dt.Rows.Count == 0)
+                return (M)Activator.CreateInstance(typeof(M));
+            return ToModel(dt.Rows[0], (M)Activator.CreateInstance(typeof(M)));
+        }
+
+        public DataTable Find<M>(M entity, string OrderBy) where M : BaseModel, new()
+        {
+            sqlstring.OrderBy = OrderBy;
+            var sql = this.GetSql(entity);
+            return SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, sql._SQL, sql._SQL_Parameter).Tables[0];
+        }
+
+        public List<M> FindToList<M>(M entity, string OrderBy) where M : BaseModel, new()
+        {
+            sqlstring.OrderBy = OrderBy;
+            var sql = this.GetSql(entity);
+            var dt = SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, sql._SQL, sql._SQL_Parameter).Tables[0];
+            return this.FindToList<M>(dt);
+        }
+
+        public List<M> FindToList<M>(DataTable dt) where M : BaseModel, new()
+        {
+            return this.ConvertDataTableToList<M>(dt);
+        }
+
+        public DataTable Find(string SQL)
+        {
+            return SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, SQL.ToString()).Tables[0];
+        }
+
+        public object FINDToObj(string SQL)
+        {
+            return SqlHelper.ExecuteScalar(_ConnectionString, CommandType.Text, SQL.ToString());
+        }
+
+        public DataTable Find(string SQL, int PageIndex, int PageSize, out int PageCount, out int Counts)
+        {
+            return SqlHelper.SysPageList(SQL, PageIndex, PageSize, out PageCount, out Counts);
+        }
+
+        public PagingEntity Find(string SQL, int PageIndex, int PageSize)
+        {
+            int PageCount = 0, Counts = 0;
+            var list = new List<Dictionary<string, object>>();
+            var dt = this.Find(SQL, PageIndex, PageSize, out PageCount, out Counts);
+            var di = new Dictionary<string, object>();
+            foreach (DataRow dr in dt.Rows)
+            {
+                di = new Dictionary<string, object>();
+                foreach (DataColumn dc in dt.Columns)
+                {
+                    di.Add(dc.ColumnName, Convert.ChangeType(dr[dc.ColumnName], dc.DataType));
+                }
+                list.Add(di);
+            }
+            return new PagingEntity() { List = list.Count > 0 ? list : new List<Dictionary<string, object>>(), dt = dt, PageCount = PageCount, Counts = Counts };
         }
 
 
+        /// <summary>
+        /// 转换实体
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="Model"></param>
+        /// <returns></returns>
+        public T ToModel<T>(DataRow r, T entity) where T : BaseModel
+        {
+            var list = entity.EH.GetAllPropertyInfo(entity);
+            foreach (DataColumn dc in r.Table.Columns)
+            {
+                var pi = list.Find(item => item.Name.Equals(dc.ColumnName));
+                if (pi == null) continue;
+                if (!Convert.IsDBNull(r[dc.ColumnName]))
+                {
+                    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], pi.PropertyType));
+                    //if (pi.PropertyType == typeof(Guid?))
+                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(Guid?)));
+                    //else if (pi.PropertyType == typeof(int?))
+                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(int?)));
+                    //else if (pi.PropertyType == typeof(string))
+                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(string)));
+                    //else if (pi.PropertyType == typeof(decimal?))
+                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(decimal?)));
+                    //else if (pi.PropertyType == typeof(double?))
+                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(double?)));
+                    //else if (pi.PropertyType == typeof(float?))
+                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(float?)));
+                    //else if (pi.PropertyType == typeof(DateTime?))
+                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(DateTime?)));
+                    //else if (pi.PropertyType == typeof(bool?))
+                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(bool?)));
+                    //else
+                    //    throw new Exception("FindContext,的 ToModel 函数 暂不支持该类型" + pi.PropertyType + " !");
+                }
+            }
+            return entity;
+        }
 
-
-
-
-
-
-
-
-
-
-
-
+        /// <summary>
+        /// 将datatable转换为list<T>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        private List<T> ConvertDataTableToList<T>(DataTable table)
+        {
+            List<T> list = new List<T>();
+            Type typeInfo = typeof(T);
+            //得到T内所有的公共属性
+            var propertys = typeInfo.GetProperties().ToList();
+            foreach (DataRow rowItem in table.Rows)
+            {
+                //通过反射动态创建对象
+                T objT = Activator.CreateInstance<T>();
+                //给objT的所有属性赋值
+                foreach (DataColumn columnItem in table.Columns)
+                {
+                    //获取指定单元格的值
+                    object value = rowItem[columnItem.ColumnName];
+                    if (!Convert.IsDBNull(value))
+                    {
+                        var pi = propertys.Find(item => item.Name.ToLower() == columnItem.ColumnName.ToLower());
+                        pi.SetValue(objT, Convert.ChangeType(value, pi.PropertyType));
+                        //if (pi.PropertyType == typeof(Guid?))
+                        //    pi.SetValue(objT, Tools.getGuid(value), null);
+                        //else if (pi.PropertyType == typeof(int?))
+                        //    pi.SetValue(objT, Tools.getInt(value), null);
+                        //else if (pi.PropertyType == typeof(string))
+                        //    pi.SetValue(objT, Tools.getString(value), null);
+                        //else if (pi.PropertyType == typeof(decimal?))
+                        //    pi.SetValue(objT, Tools.getDecimal(value), null);
+                        //else if (pi.PropertyType == typeof(double?))
+                        //    pi.SetValue(objT, Tools.getDouble(value), null);
+                        //else if (pi.PropertyType == typeof(float?))
+                        //    pi.SetValue(objT, Tools.getFloat(value), null);
+                        //else if (pi.PropertyType == typeof(DateTime?))
+                        //    pi.SetValue(objT, Tools.getDateTime(value), null);
+                        //else if (pi.PropertyType == typeof(bool?))
+                        //    pi.SetValue(objT, Tools.getBool(value), null);
+                        //else
+                        //    throw new Exception("FindContext,的 ConvertDataTableToList 函数 暂不支持该类型" + pi.PropertyType + " !");
+                    }
+                }
+                list.Add(objT);
+            }
+            return list;
+        }
 
     }
 }

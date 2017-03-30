@@ -12,6 +12,15 @@ namespace DBAccess.SQLContext
 {
     public class CommitContext
     {
+        private CommitContext() { }
+
+        private string _ConnectionString { get; set; }
+
+        public CommitContext(string ConnectionString)
+        {
+            _ConnectionString = ConnectionString;
+        }
+
         /// <summary>
         /// 提交事务
         /// </summary>
@@ -19,7 +28,7 @@ namespace DBAccess.SQLContext
         /// <returns></returns>
         public bool COMMIT(List<SQL_Container> li)
         {
-            using (SqlConnection conn = new SqlConnection(SqlHelper.getConnectionString()))
+            using (SqlConnection conn = new SqlConnection(_ConnectionString))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand();

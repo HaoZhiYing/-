@@ -12,17 +12,36 @@ namespace HZYEntityFrameWork
 {
     public class DBContext
     {
-        protected AddContext<BaseModel> add = new AddContext<BaseModel>();
-        protected EditContext<BaseModel> edit = new EditContext<BaseModel>();
-        protected DeleteContext<BaseModel> delete = new DeleteContext<BaseModel>();
-        protected FindContext<BaseModel> find = new FindContext<BaseModel>();
+        protected AddContext<BaseModel> add;
+        protected EditContext<BaseModel> edit;
+        protected DeleteContext<BaseModel> delete;
+        protected FindContext<BaseModel> find;
 
+        private string _ConnectionString { get; set; }
+
+        /// <summary>
+        /// 默认连接
+        /// </summary>
         public DBContext()
         {
-            add = new AddContext<BaseModel>();
-            edit = new EditContext<BaseModel>();
-            delete = new DeleteContext<BaseModel>();
-            find = new FindContext<BaseModel>();
+            _ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
+            add = new AddContext<BaseModel>(_ConnectionString);
+            edit = new EditContext<BaseModel>(_ConnectionString);
+            delete = new DeleteContext<BaseModel>(_ConnectionString);
+            find = new FindContext<BaseModel>(_ConnectionString);
+        }
+
+        /// <summary>
+        /// 自定义连接
+        /// </summary>
+        /// <param name="ConnectionString">连接串</param>
+        public DBContext(string ConnectionString)
+        {
+            _ConnectionString = ConnectionString;
+            add = new AddContext<BaseModel>(_ConnectionString);
+            edit = new EditContext<BaseModel>(_ConnectionString);
+            delete = new DeleteContext<BaseModel>(_ConnectionString);
+            find = new FindContext<BaseModel>(_ConnectionString);
         }
 
         public object Add(BaseModel entity)
@@ -50,7 +69,7 @@ namespace HZYEntityFrameWork
             return edit.Edit(entity, where);
         }
 
-        public bool Edit<M>(Expression<Func<M, M>> entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
+        public bool Edit<M>(BaseModel entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
             return edit.Edit(entity, where);
         }
@@ -70,7 +89,7 @@ namespace HZYEntityFrameWork
             return edit.Edit(entity, where, ref li);
         }
 
-        public bool Edit<M>(Expression<Func<M, M>> entity, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
+        public bool Edit<M>(BaseModel entity, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
         {
             return edit.Edit(entity, where, ref li);
         }
@@ -90,7 +109,7 @@ namespace HZYEntityFrameWork
             return delete.Delete(entity, where);
         }
 
-        public bool Delete<M>(Expression<Func<M, M>> entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
+        public bool Delete<M>(BaseModel entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
             return delete.Delete(entity, where);
         }
@@ -110,15 +129,27 @@ namespace HZYEntityFrameWork
             return delete.Delete(entity, where, ref li);
         }
 
-        public bool Delete<M>(Expression<Func<M, M>> entity, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
+        public bool Delete<M>(BaseModel entity, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
         {
             return delete.Delete(entity, where, ref li);
         }
 
-        public M Find<M>(M where, string orderby = "") where M : BaseModel, new()
+        public M Find<M>(M entity) where M : BaseModel, new()
         {
-            return find.Find<M>(where, orderby);
+            return find.Find(entity);
         }
+
+        public M Find<M>(string where) where M : BaseModel, new()
+        {
+            return find.Find<M>(where);
+        }
+
+
+
+        //public M Find<M>(M where, string orderby = "") where M : BaseModel, new()
+        //{
+        //    return find.Find<M>(where, orderby);
+        //}
 
 
 
