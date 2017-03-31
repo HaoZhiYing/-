@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 //
 using System.Linq.Expressions;
-using DBAccess.Entity;
 using DBAccess.SQLContext;
+using DBAccess.CheckEntity;
+using DBAccess.Entity;
 using System.Data;
 using System.Web.Script.Serialization;
 
@@ -21,6 +22,7 @@ namespace DBAccess
         protected DeleteContext<BaseModel> delete;
         protected FindContext<BaseModel> find;
         protected CommitContext commit;
+        protected CheckContext<BaseModel> check;
 
         private string _ConnectionString { get; set; }
 
@@ -36,6 +38,7 @@ namespace DBAccess
             find = new FindContext<BaseModel>(_ConnectionString);
             jss = new JavaScriptSerializer();
             commit = new CommitContext(_ConnectionString);
+            check = new CheckContext<BaseModel>(_ConnectionString);
         }
 
         /// <summary>
@@ -51,12 +54,15 @@ namespace DBAccess
             find = new FindContext<BaseModel>(_ConnectionString);
             jss = new JavaScriptSerializer();
             commit = new CommitContext(_ConnectionString);
+            check = new CheckContext<BaseModel>(_ConnectionString);
         }
 
-        public object Add(BaseModel entity)
+        public object Add(BaseModel entity, bool IsCheck = true)
         {
             try
             {
+                if (IsCheck)
+                    this.Check(entity);
                 return add.Add(entity);
             }
             catch (Exception ex)
@@ -67,10 +73,12 @@ namespace DBAccess
 
         }
 
-        public object Add(BaseModel entity, ref List<SQL_Container> li)
+        public object Add(BaseModel entity, ref List<SQL_Container> li, bool IsCheck = true)
         {
             try
             {
+                if (IsCheck)
+                    this.Check(entity);
                 return add.Add(entity, ref li);
             }
             catch (Exception ex)
@@ -80,10 +88,12 @@ namespace DBAccess
             }
         }
 
-        public bool Edit(BaseModel entity)
+        public bool Edit(BaseModel entity, bool IsCheck = true)
         {
             try
             {
+                if (IsCheck)
+                    this.Check(entity);
                 return edit.Edit(entity);
             }
             catch (Exception ex)
@@ -93,10 +103,12 @@ namespace DBAccess
             }
         }
 
-        public bool Edit(BaseModel entity, string where)
+        public bool Edit(BaseModel entity, string where, bool IsCheck = true)
         {
             try
             {
+                if (IsCheck)
+                    this.Check(entity);
                 return edit.Edit(entity, where);
             }
             catch (Exception ex)
@@ -106,10 +118,12 @@ namespace DBAccess
             }
         }
 
-        public bool Edit(BaseModel entity, BaseModel where)
+        public bool Edit(BaseModel entity, BaseModel where, bool IsCheck = true)
         {
             try
             {
+                if (IsCheck)
+                    this.Check(entity);
                 return edit.Edit(entity, where);
             }
             catch (Exception ex)
@@ -119,10 +133,12 @@ namespace DBAccess
             }
         }
 
-        public bool Edit<M>(BaseModel entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
+        public bool Edit<M>(BaseModel entity, Expression<Func<M, bool>> where, bool IsCheck = true) where M : BaseModel, new()
         {
             try
             {
+                if (IsCheck)
+                    this.Check(entity);
                 return edit.Edit(entity, where);
             }
             catch (Exception ex)
@@ -132,10 +148,12 @@ namespace DBAccess
             }
         }
 
-        public bool Edit(BaseModel entity, ref List<SQL_Container> li)
+        public bool Edit(BaseModel entity, ref List<SQL_Container> li, bool IsCheck = true)
         {
             try
             {
+                if (IsCheck)
+                    this.Check(entity);
                 return edit.Edit(entity, ref li);
             }
             catch (Exception ex)
@@ -145,10 +163,12 @@ namespace DBAccess
             }
         }
 
-        public bool Edit(BaseModel entity, string where, ref List<SQL_Container> li)
+        public bool Edit(BaseModel entity, string where, ref List<SQL_Container> li, bool IsCheck = true)
         {
             try
             {
+                if (IsCheck)
+                    this.Check(entity);
                 return edit.Edit(entity, where, ref li);
             }
             catch (Exception ex)
@@ -158,10 +178,12 @@ namespace DBAccess
             }
         }
 
-        public bool Edit(BaseModel entity, BaseModel where, ref List<SQL_Container> li)
+        public bool Edit(BaseModel entity, BaseModel where, ref List<SQL_Container> li, bool IsCheck = true)
         {
             try
             {
+                if (IsCheck)
+                    this.Check(entity);
                 return edit.Edit(entity, where, ref li);
             }
             catch (Exception ex)
@@ -171,10 +193,12 @@ namespace DBAccess
             }
         }
 
-        public bool Edit<M>(BaseModel entity, Expression<Func<M, bool>> where, ref List<SQL_Container> li) where M : BaseModel, new()
+        public bool Edit<M>(BaseModel entity, Expression<Func<M, bool>> where, ref List<SQL_Container> li, bool IsCheck = true) where M : BaseModel, new()
         {
             try
             {
+                if (IsCheck)
+                    this.Check(entity);
                 return edit.Edit(entity, where, ref li);
             }
             catch (Exception ex)
@@ -386,6 +410,26 @@ namespace DBAccess
             catch (Exception ex)
             {
                 SetError(ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 验证实体
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool Check(BaseModel model)
+        {
+            try
+            {
+                if (!check.Check(model))
+                    throw new Exception(check.ErrorMessage);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                this.SetError(check.ErrorMessage);
                 return false;
             }
         }

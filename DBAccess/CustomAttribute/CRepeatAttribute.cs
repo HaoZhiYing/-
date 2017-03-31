@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DBAccess.CustomAttribute
 {
-    public class CRepeatAttribute
+    public class CRepeatAttribute : BaseAttribute
     {
         /// <summary>
         /// 要追加的 Where 条件 例如： and 1=1  and filed1='{filed1}'

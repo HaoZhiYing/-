@@ -17,7 +17,7 @@ namespace DBAccess.Entity
         public string TableName = string.Empty;
 
         /// <summary>
-        /// 设置不验证的字段集合
+        /// 验证的字段容器
         /// </summary>
         public readonly List<string> NotChecks = new List<string>();
 
@@ -32,7 +32,7 @@ namespace DBAccess.Entity
         public readonly EntityHelper<BaseModel> EH = new EntityHelper<BaseModel>();
 
         /// <summary>
-        /// 放置不操作的字段
+        /// 放置不操作数据的字段容器
         /// </summary>
         public List<string> NotFiled = new List<string>();
 

@@ -17,10 +17,15 @@ namespace DBAccess.CustomAttribute
         public int Length { get; set; }
 
         /// <summary>
+        /// 字符串长度
+        /// </summary>
+        public char Str { get; set; }
+
+        /// <summary>
         /// 编号标记
         /// </summary>
         /// <param name="length">编号长度</param>
-        public CSetNumberAttribute(int length)
+        public CSetNumberAttribute(int length, char str = '0')
         {
             this.Length = length;
         }
