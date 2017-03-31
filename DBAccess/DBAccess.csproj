@@ -65,7 +65,7 @@
   <ItemGroup>
     <Compile Include="AdoDotNet\MySqlHelper.cs" />
     <Compile Include="AdoDotNet\SqlHelper.cs" />
-    <Compile Include="CheckEntity\Check.cs" />
+    <Compile Include="CheckEntity\CheckContext.cs" />
     <Compile Include="CustomAttribute\BaseAttribute.cs" />
     <Compile Include="CustomAttribute\CCompareAttribute.cs" />
     <Compile Include="CustomAttribute\CRangeAttribute.cs" />
@@ -99,6 +99,9 @@
     <Compile Include="SQLContext\EditContext.cs" />
     <Compile Include="SQLContext\FindContext.cs" />
     <Compile Include="SQLContext\ISqlContext.cs" />
+    <Compile Include="SQLContext\SelectContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

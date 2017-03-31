@@ -16,7 +16,7 @@ namespace DBAccess.SQLContext
     public class FindContext<T> where T : BaseModel, new()
     {
         Context.FindSqlString<T> sqlstring;
-        //CommitContext commit;
+        SelectContext select;
         private FindContext() { }
 
         private string _ConnectionString { get; set; }
@@ -24,7 +24,7 @@ namespace DBAccess.SQLContext
         public FindContext(string ConnectionString)
         {
             _ConnectionString = ConnectionString;
-            //commit = new CommitContext(_ConnectionString);
+            select = new SelectContext(_ConnectionString);
             sqlstring = new Context.FindSqlString<T>();
         }
 
@@ -48,7 +48,7 @@ namespace DBAccess.SQLContext
         public M Find<M>(M entity) where M : BaseModel, new()
         {
             var sql = this.GetSql(entity);
-            var dt = SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, sql._SQL, sql._SQL_Parameter).Tables[0];
+            var dt = select.ExecuteDataset(sql);
             if (dt.Rows.Count == 0)
                 return (M)Activator.CreateInstance(entity.GetType());
             return ToModel(dt.Rows[0], (M)Activator.CreateInstance(entity.GetType()));
@@ -57,7 +57,7 @@ namespace DBAccess.SQLContext
         public M Find<M>(string where) where M : BaseModel, new()
         {
             var sql = this.GetSql<M>(where);
-            var dt = SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, sql._SQL, sql._SQL_Parameter).Tables[0];
+            var dt = select.ExecuteDataset(sql);
             if (dt.Rows.Count == 0)
                 return (M)Activator.CreateInstance(typeof(M));
             return ToModel(dt.Rows[0], (M)Activator.CreateInstance(typeof(M)));
@@ -66,7 +66,7 @@ namespace DBAccess.SQLContext
         public M Find<M>(Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
             var sql = this.GetSql<M>(where);
-            var dt = SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, sql._SQL, sql._SQL_Parameter).Tables[0];
+            var dt = select.ExecuteDataset(sql);
             if (dt.Rows.Count == 0)
                 return (M)Activator.CreateInstance(typeof(M));
             return ToModel(dt.Rows[0], (M)Activator.CreateInstance(typeof(M)));
@@ -76,14 +76,14 @@ namespace DBAccess.SQLContext
         {
             sqlstring.OrderBy = OrderBy;
             var sql = this.GetSql(entity);
-            return SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, sql._SQL, sql._SQL_Parameter).Tables[0];
+            return select.ExecuteDataset(sql);
         }
 
         public List<M> FindToList<M>(M entity, string OrderBy) where M : BaseModel, new()
         {
             sqlstring.OrderBy = OrderBy;
             var sql = this.GetSql(entity);
-            var dt = SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, sql._SQL, sql._SQL_Parameter).Tables[0];
+            var dt = select.ExecuteDataset(sql);
             return this.FindToList<M>(dt);
         }
 
@@ -94,7 +94,7 @@ namespace DBAccess.SQLContext
 
         public DataTable Find(string SQL)
         {
-            return SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, SQL.ToString()).Tables[0];
+            return select.ExecuteDataset(SQL);
         }
 
         public object FINDToObj(string SQL)
@@ -104,7 +104,7 @@ namespace DBAccess.SQLContext
 
         public DataTable Find(string SQL, int PageIndex, int PageSize, out int PageCount, out int Counts)
         {
-            return SqlHelper.SysPageList(SQL, PageIndex, PageSize, out PageCount, out Counts);
+            return select.SysPageList(SQL, PageIndex, PageSize, out PageCount, out Counts);
         }
 
         public PagingEntity Find(string SQL, int PageIndex, int PageSize)
