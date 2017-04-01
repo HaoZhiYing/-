@@ -56,6 +56,7 @@ namespace DBAccess.SQLContext
                     });
                     //提交事务
                     tx.Commit();
+                    conn.Close();
                     return true;
                 }
                 catch (Exception ex)

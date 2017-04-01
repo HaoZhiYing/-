@@ -15,6 +15,7 @@ namespace DBAccess.SQLContext
     {
         Context.AddSqlString<T> add;
         CommitContext commit;
+        SelectContext select;
         private AddContext() { }
 
         private string _ConnectionString { get; set; }
@@ -24,6 +25,7 @@ namespace DBAccess.SQLContext
             _ConnectionString = ConnectionString;
             commit = new CommitContext(_ConnectionString);
             add = new Context.AddSqlString<T>();
+            select = new SelectContext(_ConnectionString);
         }
 
         private SQL_Container GetSql(T entity)
@@ -55,6 +57,7 @@ namespace DBAccess.SQLContext
         {
             var m = this.GetModel(entity);
             var sql = this.GetSql(m.T);
+            //if (select.ExecuteNonQuery(sql) > 0)
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return m.id;
             return null;

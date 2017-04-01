@@ -18,7 +18,7 @@ namespace DBAccess.SQLContext.Context
     public class AddSqlString<T> : AbstractSqlContext<T> where T : BaseModel, new()
     {
         //INSERT INTO TAB COL VALUES () 
-        List<SqlParameter> list_sqlpar;
+        List<SqlParameter> list_sqlpar = new List<SqlParameter>();
 
         public AddSqlString()
         {
@@ -37,6 +37,7 @@ namespace DBAccess.SQLContext.Context
 
         private SQL_Container GetSQL(T entity)
         {
+            list_sqlpar = new List<SqlParameter>();
             var TableName = entity.TableName;
             var col = new List<string>();
             var val = new List<string>();

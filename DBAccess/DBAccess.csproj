@@ -11,6 +11,21 @@
     <AssemblyName>DBAccess</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <PublishUrl>发布\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -61,7 +76,7 @@
   <ItemGroup>
     <Compile Include="AdoDotNet\MySqlHelper.cs" />
     <Compile Include="AdoDotNet\SqlHelper.cs" />
-    <Compile Include="CheckEntity\CheckContext.cs" />
+    <Compile Include="CheckClass\CheckContext.cs" />
     <Compile Include="CustomAttribute\BaseAttribute.cs" />
     <Compile Include="CustomAttribute\CCompareAttribute.cs" />
     <Compile Include="CustomAttribute\CRangeAttribute.cs" />
@@ -79,6 +94,7 @@
     <Compile Include="Entity\PagingEntity.cs" />
     <Compile Include="Entity\SQL_Container.cs" />
     <Compile Include="ExpressionTree\ExpressionHelper.cs" />
+    <Compile Include="HelperClass\Tools.cs" />
     <Compile Include="Model\T_Users.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -107,6 +123,23 @@
     <Content Include="DLL\Microsoft.Practices.EnterpriseLibrary.Data.dll" />
     <Content Include="DLL\Microsoft.Practices.ObjectBuilder.dll" />
     <Content Include="DLL\MySql.Data.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 和 x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

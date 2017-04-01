@@ -15,6 +15,7 @@ namespace DBAccess.SQLContext
     {
         Context.EditSqlString<T> sqlstring;
         CommitContext commit;
+        SelectContext select;
         private EditContext() { }
 
         private string _ConnectionString { get; set; }
@@ -24,6 +25,7 @@ namespace DBAccess.SQLContext
             _ConnectionString = ConnectionString;
             commit = new CommitContext(_ConnectionString);
             sqlstring = new Context.EditSqlString<T>();
+            select = new SelectContext(_ConnectionString);
         }
 
         private SQL_Container GetSql(T entity)
@@ -52,6 +54,7 @@ namespace DBAccess.SQLContext
         public bool Edit(T entity)
         {
             var sql = this.GetSql(entity);
+            //if (select.ExecuteNonQuery(sql) > 0)
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return true;
             return false;
@@ -60,6 +63,7 @@ namespace DBAccess.SQLContext
         public bool Edit(T entity, string where)
         {
             var sql = this.GetSql(entity, where);
+            //if (select.ExecuteNonQuery(sql) > 0)
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return true;
             return false;
@@ -68,6 +72,7 @@ namespace DBAccess.SQLContext
         public bool Edit(T entity, T where)
         {
             var sql = this.GetSql(entity, where);
+            //if (select.ExecuteNonQuery(sql) > 0)
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return true;
             return false;
@@ -76,6 +81,7 @@ namespace DBAccess.SQLContext
         public bool Edit<M>(T entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
             var sql = sqlstring.GetSqlString(entity, where);
+            //if (select.ExecuteNonQuery(sql) > 0)
             if (commit.COMMIT(new List<SQL_Container>() { sql }))
                 return true;
             return false;

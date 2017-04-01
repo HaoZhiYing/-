@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Linq.Expressions;
 using DBAccess.Reflection;
 using DBAccess.Entity;
+using DBAccess.HelperClass;
 using System.Dynamic;
 using System.Data;
 using DBAccess.AdoDotNet;

@@ -32,6 +32,16 @@ namespace DBAccess.SQLContext
             return SqlHelper.ExecuteDataset(_ConnectionString, CommandType.Text, SQL._SQL, SQL._SQL_Parameter).Tables[0];
         }
 
+        public int ExecuteNonQuery(string SQL)
+        {
+            return SqlHelper.ExecuteNonQuery(_ConnectionString, CommandType.Text, SQL);
+        }
+
+        public int ExecuteNonQuery(SQL_Container SQL)
+        {
+            return SqlHelper.ExecuteNonQuery(_ConnectionString, CommandType.Text, SQL._SQL, SQL._SQL_Parameter);
+        }
+
         public object ExecuteScalar(string SQL)
         {
             return SqlHelper.ExecuteScalar(_ConnectionString, CommandType.Text, SQL);

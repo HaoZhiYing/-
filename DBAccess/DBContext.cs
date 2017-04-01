@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 //
 using System.Linq.Expressions;
 using DBAccess.SQLContext;
-using DBAccess.CheckEntity;
+using DBAccess.CheckClass;
 using DBAccess.Entity;
 using System.Data;
 using System.Web.Script.Serialization;
@@ -29,12 +29,22 @@ namespace DBAccess
         /// <summary>
         /// 默认连接
         /// </summary>
-        private DBContext() { }
+        private DBContext()
+        {
+            //_ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
+            //add = new AddContext<BaseModel>(_ConnectionString);
+            //edit = new EditContext<BaseModel>(_ConnectionString);
+            //delete = new DeleteContext<BaseModel>(_ConnectionString);
+            //find = new FindContext<BaseModel>(_ConnectionString);
+            //jss = new JavaScriptSerializer();
+            //commit = new CommitContext(_ConnectionString);
+            //check = new CheckContext<BaseModel>(_ConnectionString);
+        }
 
         /// <summary>
         /// 数据库操作类
         /// </summary>
-        /// <param name="ConnectionString">链接串 不传入默认为 ConnectionString</param>
+        /// <param name="ConnectionString">链接串 不传入默认为 ConnectionString </param>
         public DBContext(string ConnectionString = null)
         {
             if (string.IsNullOrEmpty(ConnectionString))
@@ -412,7 +422,7 @@ namespace DBAccess
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public bool Check(BaseModel model)
+        public bool CheckModel(BaseModel model)
         {
             try
             {
@@ -425,6 +435,17 @@ namespace DBAccess
                 this.SetError(check.ErrorMessage);
                 return false;
             }
+        }
+
+        /// <summary>
+        /// 验证实体
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private void Check(BaseModel model)
+        {
+            if (!check.Check(model))
+                throw new Exception(check.ErrorMessage);
         }
 
         /// <summary>

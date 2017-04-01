@@ -9,7 +9,7 @@ using DBAccess.CustomAttribute;
 using DBAccess.SQLContext;
 using System.Reflection;
 
-namespace DBAccess.CheckEntity
+namespace DBAccess.CheckClass
 {
     /// <summary>
     /// 验证
@@ -76,19 +76,20 @@ namespace DBAccess.CheckEntity
         {
             var attrValue = item.GetValue(entity);
             var fileName = item.Name;
+            var DisplayName = entity.EH.GetDisplayName(entity, fileName);
             var tag = entity.EH.GetAttrTag<CRequiredAttribute>(entity, fileName);
             if (tag != null)
             {
                 if (attrValue == null)
                 {
-                    SetErrorMessage(tag.ErrorMessage, fileName + "不能为空", fileName);
+                    SetErrorMessage(tag.ErrorMessage, DisplayName + "不能为空", DisplayName);
                     return false;
                 }
                 if (item.PropertyType.Equals(typeof(string)))
                 {
                     if (string.IsNullOrEmpty(attrValue.ToString()))
                     {
-                        SetErrorMessage(tag.ErrorMessage, fileName + "不能为空", fileName);
+                        SetErrorMessage(tag.ErrorMessage, DisplayName + "不能为空", DisplayName);
                         return false;
                     }
                 }
@@ -96,7 +97,7 @@ namespace DBAccess.CheckEntity
                 {
                     if (Guid.Parse(attrValue.ToString()).Equals(Guid.Empty))
                     {
-                        SetErrorMessage(tag.ErrorMessage, fileName + "不能为空", fileName);
+                        SetErrorMessage(tag.ErrorMessage, DisplayName + "不能为空", DisplayName);
                         return false;
                     }
                 }
@@ -104,7 +105,7 @@ namespace DBAccess.CheckEntity
                 {
                     if (attrValue == null)
                     {
-                        SetErrorMessage(tag.ErrorMessage, fileName + "不能为空", fileName);
+                        SetErrorMessage(tag.ErrorMessage, DisplayName + "不能为空", DisplayName);
                         return false;
                     }
                 }
@@ -132,11 +133,12 @@ namespace DBAccess.CheckEntity
             //获取有特性标记的属性【字符串长度验证】
             var attrValue = item.GetValue(entity);
             var fileName = item.Name;
+            var DisplayName = entity.EH.GetDisplayName(entity, fileName);
             var sign = entity.EH.GetAttrTag<CStringLengthAttribute>(entity, fileName);
             if (attrValue != null)
                 if (sign != null && (attrValue.ToString().Length < sign.MinLength || attrValue.ToString().Length > sign.MaxLength))
                 {
-                    SetErrorMessage(sign.ErrorMessage, fileName + "长度介于" + sign.MinLength + "-" + sign.MaxLength + "之间", fileName);
+                    SetErrorMessage(sign.ErrorMessage, DisplayName + "长度介于" + sign.MinLength + "-" + sign.MaxLength + "之间", DisplayName);
                     return false;
                 }
             return true;
@@ -153,11 +155,12 @@ namespace DBAccess.CheckEntity
             //获取有特性标记的属性【正则表达式验证】
             var attrValue = item.GetValue(entity);
             var fileName = item.Name;
+            var DisplayName = entity.EH.GetDisplayName(entity, fileName);
             var sign = entity.EH.GetAttrTag<CRegularExpressionAttribute>(entity, fileName);
             if (attrValue != null)
                 if (sign != null && !System.Text.RegularExpressions.Regex.IsMatch(attrValue.ToString(), sign.Pattern))
                 {
-                    SetErrorMessage(sign.ErrorMessage, fileName + "格式不正确", fileName);
+                    SetErrorMessage(sign.ErrorMessage, DisplayName + "格式不正确", DisplayName);
                     return false;
                 }
             return true;
@@ -174,7 +177,8 @@ namespace DBAccess.CheckEntity
             //获取有特性标记的属性【比较两字段值是否相同】
             var attrValue = item.GetValue(entity);
             var fileName = item.Name;
-            var sign = entity.EH.GetAttrTag<CCompareAttribute>(entity, item.Name);
+            var DisplayName = entity.EH.GetDisplayName(entity, fileName);
+            var sign = entity.EH.GetAttrTag<CCompareAttribute>(entity, fileName);
             if (attrValue != null)
                 if (sign != null)
                 {
@@ -184,7 +188,7 @@ namespace DBAccess.CheckEntity
                         var infoname = entity.EH.GetAttrTag<CCompareAttribute>(entity, fileName);
                         if (info.Name.Equals(sign.OtherProperty) && !info.GetValue(entity, null).Equals(attrValue))
                         {
-                            SetErrorMessage(sign.ErrorMessage, fileName + "的值与" + infoname + "不匹配", fileName);
+                            SetErrorMessage(sign.ErrorMessage, DisplayName + "的值与" + infoname + "不匹配", DisplayName);
                             return false;
                         }
                     }
@@ -204,7 +208,8 @@ namespace DBAccess.CheckEntity
             //获取有特性标记的属性【非空】
             var attrValue = item.GetValue(entity);
             var fileName = item.Name;
-            var sign = entity.EH.GetAttrTag<CRepeatAttribute>(entity, item.Name);
+            var DisplayName = entity.EH.GetDisplayName(entity, fileName);
+            var sign = entity.EH.GetAttrTag<CRepeatAttribute>(entity, fileName);
             if (attrValue != null)
                 if (sign != null)
                 {
@@ -233,7 +238,7 @@ namespace DBAccess.CheckEntity
                     string sql = "SELECT COUNT(1) FROM " + TableName + " WHERE 1=1 AND " + fileName + "='" + attrValue + "' " + where;
                     if (Convert.ToInt32(select.ExecuteScalar(sql)) > 0)
                     {
-                        SetErrorMessage(sign.ErrorMessage, fileName + "已存在", fileName);
+                        SetErrorMessage(sign.ErrorMessage, DisplayName + "已存在", DisplayName);
                         return false;
                     }
                 }
