@@ -11,9 +11,11 @@ namespace DBAccess.CustomAttribute
     /// </summary>
     public class CRequiredAttribute : BaseAttribute
     {
-        public CRequiredAttribute()
-        {
+        private CRequiredAttribute() { }
 
+        public CRequiredAttribute(string ErrorMessage)
+        {
+            this.ErrorMessage = ErrorMessage;
         }
 
     }

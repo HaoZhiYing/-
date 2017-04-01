@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using DBAccess.AdoDotNet;
 using DBAccess.Entity;
+using System.Data;
 
 namespace DBAccess.SQLContext
 {
@@ -37,6 +38,11 @@ namespace DBAccess.SQLContext
                 cmd.Transaction = tx;
                 try
                 {
+                    //li.ForEach(item =>
+                    //{
+                    //    //执行sql
+                    //    SqlHelper.ExecuteNonQuery(tx, CommandType.Text, item._SQL, item._SQL_Parameter);
+                    //});
                     li.ForEach(item =>
                     {
                         cmd.Parameters.Clear();

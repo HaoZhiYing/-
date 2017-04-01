@@ -105,22 +105,14 @@ namespace DBAccess.Entity
         /// <typeparam name="T"></typeparam>
         /// <param name="FiledName"></param>
         /// <returns></returns>
-        public T GetValue<T>(string FiledName)
+        public object GetValue(string FiledName, Type T)
         {
             if (FiledName.StartsWith("get_"))
                 FiledName = FiledName.Replace("get_", "");
             if (fileds.ContainsKey(FiledName))
-            {
-                try
-                {
-                    return (T)fileds[FiledName];
-                }
-                catch (Exception ex)
-                {
-                    return default(T);
-                }
-            }
-            return default(T);
+                return fileds[FiledName];
+            else
+                return null;
         }
 
         /// <summary>

@@ -22,8 +22,19 @@ namespace DBAccess.Reflection
         /// <returns></returns>
         public string GetKeyName(T model)
         {
-            var val = BaseHelper.GetAllPropertyInfo(model.GetType()).Find(item => (item.GetCustomAttribute(typeof(FiledAttribute)) as FiledAttribute).IsPrimaryKey);
-            return val == null ? string.Empty : val.Name;
+            var list = BaseHelper.GetAllPropertyInfo(model.GetType());
+            var result = string.Empty;
+            foreach (var item in list)
+            {
+                var attr = item.GetCustomAttribute(typeof(FiledAttribute));
+                if (attr == null)
+                    continue;
+                if (!(attr as FiledAttribute).IsPrimaryKey)
+                    continue;
+                result = item.Name;
+                break;
+            }
+            return result;
         }
 
         /// <summary>
@@ -32,8 +43,19 @@ namespace DBAccess.Reflection
         /// <returns></returns>
         public string GetKeyValue(T model)
         {
-            var val = BaseHelper.GetAllPropertyInfo(model.GetType()).Find(item => (item.GetCustomAttribute(typeof(FiledAttribute)) as FiledAttribute).IsPrimaryKey);
-            return val == null ? string.Empty : val.GetValue(model) == null ? string.Empty : val.GetValue(model).ToString();
+            var list = BaseHelper.GetAllPropertyInfo(model.GetType());
+            var result = string.Empty;
+            foreach (var item in list)
+            {
+                var attr = item.GetCustomAttribute(typeof(FiledAttribute));
+                if (attr == null)
+                    continue;
+                if (!(attr as FiledAttribute).IsPrimaryKey)
+                    continue;
+                result = item.GetValue(model) == null ? "" : item.GetValue(model).ToString();
+                break;
+            }
+            return result;
         }
 
         /// <summary>

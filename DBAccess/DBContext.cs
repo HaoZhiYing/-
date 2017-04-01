@@ -29,25 +29,18 @@ namespace DBAccess
         /// <summary>
         /// 默认连接
         /// </summary>
-        public DBContext()
-        {
-            _ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
-            add = new AddContext<BaseModel>(_ConnectionString);
-            edit = new EditContext<BaseModel>(_ConnectionString);
-            delete = new DeleteContext<BaseModel>(_ConnectionString);
-            find = new FindContext<BaseModel>(_ConnectionString);
-            jss = new JavaScriptSerializer();
-            commit = new CommitContext(_ConnectionString);
-            check = new CheckContext<BaseModel>(_ConnectionString);
-        }
+        private DBContext() { }
 
         /// <summary>
-        /// 自定义连接
+        /// 数据库操作类
         /// </summary>
-        /// <param name="ConnectionString">连接串</param>
-        public DBContext(string ConnectionString)
+        /// <param name="ConnectionString">链接串 不传入默认为 ConnectionString</param>
+        public DBContext(string ConnectionString = null)
         {
-            _ConnectionString = ConnectionString;
+            if (string.IsNullOrEmpty(ConnectionString))
+                _ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
+            else
+                _ConnectionString = ConnectionString;
             add = new AddContext<BaseModel>(_ConnectionString);
             edit = new EditContext<BaseModel>(_ConnectionString);
             delete = new DeleteContext<BaseModel>(_ConnectionString);

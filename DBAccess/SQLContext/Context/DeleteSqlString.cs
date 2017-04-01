@@ -57,11 +57,11 @@ namespace DBAccess.SQLContext.Context
             {
                 var value = item.Value;
                 var key = item.Key;
-                where.Add(key + "=@" + key + "");
+                where.Add(" AND " + key + "=@" + key + "");
 
                 list_sqlpar.Add(new SqlParameter() { ParameterName = key, Value = value });
             }
-            string sql = string.Format(" DELETE FROM {0} WHERE 1=1 {2} ", TableName, string.Join(" AND ", where));
+            string sql = string.Format(" DELETE FROM {0} WHERE 1=1 {1} ", TableName, string.Join(" ", where));
             return new SQL_Container(sql, list_sqlpar.ToArray());
         }
 

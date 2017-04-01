@@ -141,25 +141,24 @@ namespace DBAccess.SQLContext
                 if (pi == null) continue;
                 if (!Convert.IsDBNull(r[dc.ColumnName]))
                 {
-                    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], pi.PropertyType));
-                    //if (pi.PropertyType == typeof(Guid?))
-                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(Guid?)));
-                    //else if (pi.PropertyType == typeof(int?))
-                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(int?)));
-                    //else if (pi.PropertyType == typeof(string))
-                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(string)));
-                    //else if (pi.PropertyType == typeof(decimal?))
-                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(decimal?)));
-                    //else if (pi.PropertyType == typeof(double?))
-                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(double?)));
-                    //else if (pi.PropertyType == typeof(float?))
-                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(float?)));
-                    //else if (pi.PropertyType == typeof(DateTime?))
-                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(DateTime?)));
-                    //else if (pi.PropertyType == typeof(bool?))
-                    //    pi.SetValue(entity, Convert.ChangeType(r[dc.ColumnName], typeof(bool?)));
-                    //else
-                    //    throw new Exception("FindContext,的 ToModel 函数 暂不支持该类型" + pi.PropertyType + " !");
+                    if (pi.PropertyType == typeof(Guid?))
+                        pi.SetValue(entity, r[dc.ColumnName] as Guid?);
+                    else if (pi.PropertyType == typeof(int?))
+                        pi.SetValue(entity, r[dc.ColumnName] as int?);
+                    else if (pi.PropertyType == typeof(string))
+                        pi.SetValue(entity, r[dc.ColumnName] as string);
+                    else if (pi.PropertyType == typeof(decimal?))
+                        pi.SetValue(entity, r[dc.ColumnName] as decimal?);
+                    else if (pi.PropertyType == typeof(double?))
+                        pi.SetValue(entity, r[dc.ColumnName] as double?);
+                    else if (pi.PropertyType == typeof(float?))
+                        pi.SetValue(entity, r[dc.ColumnName] as float?);
+                    else if (pi.PropertyType == typeof(DateTime?))
+                        pi.SetValue(entity, r[dc.ColumnName] as DateTime?);
+                    else if (pi.PropertyType == typeof(bool?))
+                        pi.SetValue(entity, r[dc.ColumnName] as bool?);
+                    else
+                        throw new Exception("FindContext,的 ToModel 函数 暂不支持该类型" + pi.PropertyType + " !");
                 }
             }
             return entity;
@@ -189,25 +188,25 @@ namespace DBAccess.SQLContext
                     if (!Convert.IsDBNull(value))
                     {
                         var pi = propertys.Find(item => item.Name.ToLower() == columnItem.ColumnName.ToLower());
-                        pi.SetValue(objT, Convert.ChangeType(value, pi.PropertyType));
-                        //if (pi.PropertyType == typeof(Guid?))
-                        //    pi.SetValue(objT, Tools.getGuid(value), null);
-                        //else if (pi.PropertyType == typeof(int?))
-                        //    pi.SetValue(objT, Tools.getInt(value), null);
-                        //else if (pi.PropertyType == typeof(string))
-                        //    pi.SetValue(objT, Tools.getString(value), null);
-                        //else if (pi.PropertyType == typeof(decimal?))
-                        //    pi.SetValue(objT, Tools.getDecimal(value), null);
-                        //else if (pi.PropertyType == typeof(double?))
-                        //    pi.SetValue(objT, Tools.getDouble(value), null);
-                        //else if (pi.PropertyType == typeof(float?))
-                        //    pi.SetValue(objT, Tools.getFloat(value), null);
-                        //else if (pi.PropertyType == typeof(DateTime?))
-                        //    pi.SetValue(objT, Tools.getDateTime(value), null);
-                        //else if (pi.PropertyType == typeof(bool?))
-                        //    pi.SetValue(objT, Tools.getBool(value), null);
-                        //else
-                        //    throw new Exception("FindContext,的 ConvertDataTableToList 函数 暂不支持该类型" + pi.PropertyType + " !");
+
+                        if (pi.PropertyType == typeof(Guid?))
+                            pi.SetValue(objT, value as Guid?);
+                        else if (pi.PropertyType == typeof(int?))
+                            pi.SetValue(objT, value as int?);
+                        else if (pi.PropertyType == typeof(string))
+                            pi.SetValue(objT, value as string);
+                        else if (pi.PropertyType == typeof(decimal?))
+                            pi.SetValue(objT, value as decimal?);
+                        else if (pi.PropertyType == typeof(double?))
+                            pi.SetValue(objT, value as double?);
+                        else if (pi.PropertyType == typeof(float?))
+                            pi.SetValue(objT, value as float?);
+                        else if (pi.PropertyType == typeof(DateTime?))
+                            pi.SetValue(objT, value as DateTime?);
+                        else if (pi.PropertyType == typeof(bool?))
+                            pi.SetValue(objT, value as bool?);
+                        else
+                            throw new Exception("FindContext,的 ConvertDataTableToList 函数 暂不支持该类型" + pi.PropertyType + " !");
                     }
                 }
                 list.Add(objT);

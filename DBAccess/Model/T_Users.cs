@@ -20,6 +20,8 @@ namespace DBAccess.Model
 
         [Filed(DisplayName = "ID", IsPrimaryKey = true)]
         public Guid? uUsers_ID { get; set; }
+        [Filed(DisplayName = "真是姓名")]
+        [CRequired("请输入{name}")]
         public string cUsers_Name { get; set; }
         public string cUsers_LoginName { get; set; }
         public string cUsers_LoginPwd { get; set; }

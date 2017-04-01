@@ -11,7 +11,6 @@ namespace DBAccess.CustomAttribute
     /// </summary>
     public class CRangeAttribute : BaseAttribute
     {
-
         /// <summary>
         /// 最小值
         /// </summary>
