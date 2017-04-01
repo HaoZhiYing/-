@@ -20,7 +20,7 @@ namespace DBAccess
             s.Start();
             DBContext db = new DBContext();
             List<SQL_Container> li = new List<SQL_Container>();
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 2; i++)
             {
                 //    T_Users user = new T_Users();
                 //    user.cUsers_Email = "1396510655@qq.com";
@@ -35,10 +35,11 @@ namespace DBAccess
                 user.cUsers_LoginName = "test&" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 user.cUsers_LoginPwd = "123456";
                 user.cUsers_Name = "haha";
-
+                user.AddNotChecks("cUsers_Name");
                 var keyid = db.Add(user);
                 user = new T_Users();
                 user.uUsers_ID = Guid.Parse(keyid.ToString());
+                
                 var model = db.Find(user);
 
 

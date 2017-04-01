@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DBAccess.Entity;
 using DBAccess.CustomAttribute;
 using DBAccess.SQLContext;
+using DBAccess.HelperClass;
 using System.Reflection;
 
 namespace DBAccess.CheckClass
@@ -36,32 +37,31 @@ namespace DBAccess.CheckClass
 
         public bool Check(T entity)
         {
-            var list = entity.EH.GetAllPropertyInfo(entity);
+            var list = entity.EH.GetAllPropertyInfo(entity).FindAll(item => !entity.NotChecks.Contains(item.Name));
 
             foreach (var item in list)
             {
-                if (!entity.NotChecks.Contains(item.Name))
-                {
-                    if (!this.Main(item, entity))
-                        return false;
-                }
+                if (!this.Main(item, entity))
+                    return false;
             }
             return true;
         }
 
         public bool Main(PropertyInfo item, T entity)
         {
-            if (!CRequired(item, entity))
+            var DisplayName = entity.EH.GetDisplayName(entity, item.Name);
+            var Value = item.GetValue(entity);
+            if (!CRequired(item, entity, DisplayName, Value))
                 return false;
-            if (!CStringLength(item, entity))
+            if (!CStringLength(item, entity, DisplayName, Value))
                 return false;
-            if (!CRegularExpression(item, entity))
+            if (!CRegularExpression(item, entity, DisplayName, Value))
                 return false;
-            if (!CCompare(item, entity))
+            if (!CCompare(item, entity, DisplayName, Value))
                 return false;
-            if (!CRepeat(item, entity))
+            if (!CRepeat(item, entity, DisplayName, Value))
                 return false;
-            if (!SetNumber(item, entity))
+            if (!SetNumber(item, entity, DisplayName, Value))
                 return false;
             return true;
         }
@@ -72,22 +72,20 @@ namespace DBAccess.CheckClass
         /// <param name="item"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool CRequired(PropertyInfo item, T entity)
+        public bool CRequired(PropertyInfo item, T entity, string DisplayName, object Value)
         {
-            var attrValue = item.GetValue(entity);
             var fileName = item.Name;
-            var DisplayName = entity.EH.GetDisplayName(entity, fileName);
             var tag = entity.EH.GetAttrTag<CRequiredAttribute>(entity, fileName);
             if (tag != null)
             {
-                if (attrValue == null)
+                if (Value == null)
                 {
                     SetErrorMessage(tag.ErrorMessage, DisplayName + "不能为空", DisplayName);
                     return false;
                 }
                 if (item.PropertyType.Equals(typeof(string)))
                 {
-                    if (string.IsNullOrEmpty(attrValue.ToString()))
+                    if (string.IsNullOrEmpty(Value.ToString()))
                     {
                         SetErrorMessage(tag.ErrorMessage, DisplayName + "不能为空", DisplayName);
                         return false;
@@ -95,29 +93,14 @@ namespace DBAccess.CheckClass
                 }
                 else if (item.PropertyType.Equals(typeof(Guid?)))
                 {
-                    if (Guid.Parse(attrValue.ToString()).Equals(Guid.Empty))
-                    {
-                        SetErrorMessage(tag.ErrorMessage, DisplayName + "不能为空", DisplayName);
-                        return false;
-                    }
-                }
-                else if (item.PropertyType.Equals(typeof(int?)))
-                {
-                    if (attrValue == null)
+                    if (Guid.Parse(Value.ToString()).Equals(Guid.Empty))
                     {
                         SetErrorMessage(tag.ErrorMessage, DisplayName + "不能为空", DisplayName);
                         return false;
                     }
                 }
                 else
-                {
-                    //if (string.IsNullOrEmpty(Tools.getString(attrValue)))
-                    //{
-                    //    SetErrorMessage(sign.ErrorMessage, fileName + "不能为空", fileName);
-                    //    return false;
-                    //}
                     throw new AggregateException("类型 " + item.PropertyType + " 不支持验证!");
-                }
             }
             return true;
         }
@@ -128,15 +111,13 @@ namespace DBAccess.CheckClass
         /// <param name="item"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool CStringLength(PropertyInfo item, T entity)
+        public bool CStringLength(PropertyInfo item, T entity, string DisplayName, object Value)
         {
             //获取有特性标记的属性【字符串长度验证】
-            var attrValue = item.GetValue(entity);
             var fileName = item.Name;
-            var DisplayName = entity.EH.GetDisplayName(entity, fileName);
             var sign = entity.EH.GetAttrTag<CStringLengthAttribute>(entity, fileName);
-            if (attrValue != null)
-                if (sign != null && (attrValue.ToString().Length < sign.MinLength || attrValue.ToString().Length > sign.MaxLength))
+            if (Value != null)
+                if (sign != null && (Value.ToString().Length < sign.MinLength || Value.ToString().Length > sign.MaxLength))
                 {
                     SetErrorMessage(sign.ErrorMessage, DisplayName + "长度介于" + sign.MinLength + "-" + sign.MaxLength + "之间", DisplayName);
                     return false;
@@ -150,15 +131,13 @@ namespace DBAccess.CheckClass
         /// <param name="item"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool CRegularExpression(PropertyInfo item, T entity)
+        public bool CRegularExpression(PropertyInfo item, T entity, string DisplayName, object Value)
         {
             //获取有特性标记的属性【正则表达式验证】
-            var attrValue = item.GetValue(entity);
             var fileName = item.Name;
-            var DisplayName = entity.EH.GetDisplayName(entity, fileName);
             var sign = entity.EH.GetAttrTag<CRegularExpressionAttribute>(entity, fileName);
-            if (attrValue != null)
-                if (sign != null && !System.Text.RegularExpressions.Regex.IsMatch(attrValue.ToString(), sign.Pattern))
+            if (Value != null)
+                if (sign != null && !System.Text.RegularExpressions.Regex.IsMatch(Value.ToString(), sign.Pattern))
                 {
                     SetErrorMessage(sign.ErrorMessage, DisplayName + "格式不正确", DisplayName);
                     return false;
@@ -172,21 +151,19 @@ namespace DBAccess.CheckClass
         /// <param name="item"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool CCompare(PropertyInfo item, T entity)
+        public bool CCompare(PropertyInfo item, T entity, string DisplayName, object Value)
         {
             //获取有特性标记的属性【比较两字段值是否相同】
-            var attrValue = item.GetValue(entity);
             var fileName = item.Name;
-            var DisplayName = entity.EH.GetDisplayName(entity, fileName);
             var sign = entity.EH.GetAttrTag<CCompareAttribute>(entity, fileName);
-            if (attrValue != null)
+            if (Value != null)
                 if (sign != null)
                 {
                     var list = entity.EH.GetAllPropertyInfo(entity);
                     foreach (var info in list)
                     {
                         var infoname = entity.EH.GetAttrTag<CCompareAttribute>(entity, fileName);
-                        if (info.Name.Equals(sign.OtherProperty) && !info.GetValue(entity, null).Equals(attrValue))
+                        if (info.Name.Equals(sign.OtherProperty) && !info.GetValue(entity).Equals(Value))
                         {
                             SetErrorMessage(sign.ErrorMessage, DisplayName + "的值与" + infoname + "不匹配", DisplayName);
                             return false;
@@ -202,15 +179,13 @@ namespace DBAccess.CheckClass
         /// <param name="item"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool CRepeat(PropertyInfo item, T entity)
+        public bool CRepeat(PropertyInfo item, T entity, string DisplayName, object Value)
         {
             string TableName = entity.TableName;
             //获取有特性标记的属性【非空】
-            var attrValue = item.GetValue(entity);
             var fileName = item.Name;
-            var DisplayName = entity.EH.GetDisplayName(entity, fileName);
             var sign = entity.EH.GetAttrTag<CRepeatAttribute>(entity, fileName);
-            if (attrValue != null)
+            if (Value != null)
                 if (sign != null)
                 {
                     //取ID的值
@@ -235,8 +210,8 @@ namespace DBAccess.CheckClass
                         }
                     }
 
-                    string sql = "SELECT COUNT(1) FROM " + TableName + " WHERE 1=1 AND " + fileName + "='" + attrValue + "' " + where;
-                    if (Convert.ToInt32(select.ExecuteScalar(sql)) > 0)
+                    string sql = "SELECT COUNT(1) FROM " + TableName + " WHERE 1=1 AND " + fileName + "='" + Value + "' " + where;
+                    if (Tool.ToInt(select.ExecuteScalar(sql)) > 0)
                     {
                         SetErrorMessage(sign.ErrorMessage, DisplayName + "已存在", DisplayName);
                         return false;
@@ -252,7 +227,7 @@ namespace DBAccess.CheckClass
         /// <param name="item"></param>
         /// <param name="Model"></param>
         /// <returns></returns>
-        public bool SetNumber(PropertyInfo item, T Model)
+        public bool SetNumber(PropertyInfo item, T Model, string DisplayName, object Value)
         {
             string TableName = Model.TableName;
             //获取有特性标记的属性【编号】
@@ -272,9 +247,9 @@ namespace DBAccess.CheckClass
                     if (num == null)
                         throw new AggregateException("设置编号错误：数据无法查出！");
                     if (item.PropertyType == typeof(int))
-                        item.SetValue(Model, int.Parse(num.ToString().PadLeft(sign.Length, sign.Str)));
+                        item.SetValue(Model, Tool.ToInt(num.ToString().PadLeft(sign.Length, sign.Str)));
                     else
-                        item.SetValue(Model, num.ToString().PadLeft(sign.Length, sign.Str));
+                        item.SetValue(Model, Tool.ToString(num).PadLeft(sign.Length, sign.Str));
                 }
             }
             return true;

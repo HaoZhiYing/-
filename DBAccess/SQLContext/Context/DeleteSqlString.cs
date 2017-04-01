@@ -30,11 +30,13 @@ namespace DBAccess.SQLContext.Context
         /// <returns></returns>
         public override SQL_Container GetSqlString(T where)
         {
+            list_sqlpar = new List<SqlParameter>();
             return this.GetSQL(where);
         }
 
         public SQL_Container GetSqlString<M>(Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
+            list_sqlpar = new List<SqlParameter>();
             return this.GetSQL<M>(" AND " + this.GetWhereString(where, ref list_sqlpar));
         }
 
@@ -45,6 +47,7 @@ namespace DBAccess.SQLContext.Context
 
         public SQL_Container GetSqlString<M>(string where) where M : BaseModel, new()
         {
+            list_sqlpar = new List<SqlParameter>();
             return this.GetSQL<M>(where);
         }
 
@@ -67,7 +70,7 @@ namespace DBAccess.SQLContext.Context
 
         private SQL_Container GetSQL<M>(string where) where M : BaseModel, new()
         {
-            M m = (M)Activator.CreateInstance(typeof(M));
+            M m = default(M);
             var TableName = m.TableName;
             string sql = string.Format(" DELETE FROM {0} WHERE 1=1 {1} ", TableName, where);
             return new SQL_Container(sql, list_sqlpar.ToArray());

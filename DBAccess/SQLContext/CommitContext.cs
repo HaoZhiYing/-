@@ -38,25 +38,16 @@ namespace DBAccess.SQLContext
                 cmd.Transaction = tx;
                 try
                 {
-                    //li.ForEach(item =>
-                    //{
-                    //    //执行sql
-                    //    SqlHelper.ExecuteNonQuery(tx, CommandType.Text, item._SQL, item._SQL_Parameter);
-                    //});
                     li.ForEach(item =>
                     {
                         cmd.Parameters.Clear();
                         //执行sql
                         cmd.CommandText = item._SQL;
-                        item._SQL_Parameter.ToList().ForEach(p =>
-                        {
-                            cmd.Parameters.Add(p);
-                        });
+                        item._SQL_Parameter.ToList().ForEach(p => { cmd.Parameters.Add(p); });
                         cmd.ExecuteNonQuery();
                     });
                     //提交事务
                     tx.Commit();
-                    conn.Close();
                     return true;
                 }
                 catch (Exception ex)

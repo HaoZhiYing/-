@@ -34,16 +34,19 @@ namespace DBAccess.SQLContext.Context
 
         public SQL_Container GetSqlString<M>(M entity) where M : BaseModel, new()
         {
+            list_sqlpar = new List<SqlParameter>();
             return this.GetSQL(entity);
         }
 
         public SQL_Container GetSqlString<M>(Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
+            list_sqlpar = new List<SqlParameter>();
             return this.GetSQL<M>(" AND " + this.GetWhereString(where, ref list_sqlpar));
         }
 
         public SQL_Container GetSqlString<M>(string where) where M : BaseModel, new()
         {
+            list_sqlpar = new List<SqlParameter>();
             return this.GetSQL<M>(where);
         }
 
@@ -60,7 +63,7 @@ namespace DBAccess.SQLContext.Context
                 list_sqlpar.Add(new SqlParameter() { ParameterName = key, Value = value });
             }
             OrderBy = string.IsNullOrEmpty(OrderBy) ? "" : " Order By " + OrderBy;
-            string sql = string.Format(" SELECT {0} FROM {1} WHERE 1=1 {2} {3}", "*", TableName, string.Join(" ", where), OrderBy);
+            string sql = string.Format(" SELECT {0} FROM {1} WHERE 1=1 {2} {3} ", "*", TableName, string.Join(" ", where), OrderBy);
             return new SQL_Container(sql, list_sqlpar.ToArray());
         }
 
@@ -70,7 +73,7 @@ namespace DBAccess.SQLContext.Context
             M m = (M)Activator.CreateInstance(typeof(M));
             var TableName = m.TableName;
             OrderBy = string.IsNullOrEmpty(OrderBy) ? "" : " Order By " + OrderBy;
-            string sql = string.Format(" SELECT {0} FROM {1} WHERE 1=1 {2} {3}", "*", TableName, where, OrderBy);
+            string sql = string.Format(" SELECT {0} FROM {1} WHERE 1=1 {2} {3} ", "*", TableName, where, OrderBy);
             return new SQL_Container(sql, list_sqlpar.ToArray());
         }
 

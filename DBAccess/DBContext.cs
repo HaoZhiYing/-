@@ -29,17 +29,7 @@ namespace DBAccess
         /// <summary>
         /// 默认连接
         /// </summary>
-        private DBContext()
-        {
-            //_ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
-            //add = new AddContext<BaseModel>(_ConnectionString);
-            //edit = new EditContext<BaseModel>(_ConnectionString);
-            //delete = new DeleteContext<BaseModel>(_ConnectionString);
-            //find = new FindContext<BaseModel>(_ConnectionString);
-            //jss = new JavaScriptSerializer();
-            //commit = new CommitContext(_ConnectionString);
-            //check = new CheckContext<BaseModel>(_ConnectionString);
-        }
+        private DBContext() { }
 
         /// <summary>
         /// 数据库操作类

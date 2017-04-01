@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 //
 using DBAccess.Entity;
 using DBAccess.CustomAttribute;
+using System.Reflection;
 
 namespace DBAccess.Model
 {
@@ -27,5 +28,41 @@ namespace DBAccess.Model
         public string cUsers_LoginPwd { get; set; }
         public string cUsers_Email { get; set; }
         public DateTime? dUsers_CreateTime { get; set; }
+
+
+        //[Filed(DisplayName = "ID", IsPrimaryKey = true)]
+        //public Guid? uUsers_ID
+        //{
+        //    set { SetValue(MethodBase.GetCurrentMethod().Name, value); }
+        //    get { return GetValue<Guid?>(MethodBase.GetCurrentMethod().Name); }
+        //}
+        //[Filed(DisplayName = "真实姓名")]
+        //[CRequired("请输入{name}")]
+        //public string cUsers_Name
+        //{
+        //    set { SetValue(MethodBase.GetCurrentMethod().Name, value); }
+        //    get { return GetValue<string>(MethodBase.GetCurrentMethod().Name); }
+        //}
+        //public string cUsers_LoginName
+        //{
+        //    set { SetValue(MethodBase.GetCurrentMethod().Name, value); }
+        //    get { return GetValue<string>(MethodBase.GetCurrentMethod().Name); }
+        //}
+        //public string cUsers_LoginPwd
+        //{
+        //    set { SetValue(MethodBase.GetCurrentMethod().Name, value); }
+        //    get { return GetValue<string>(MethodBase.GetCurrentMethod().Name); }
+        //}
+        //public string cUsers_Email
+        //{
+        //    set { SetValue(MethodBase.GetCurrentMethod().Name, value); }
+        //    get { return GetValue<string>(MethodBase.GetCurrentMethod().Name); }
+        //}
+        //public DateTime? dUsers_CreateTime
+        //{
+        //    set { SetValue(MethodBase.GetCurrentMethod().Name, value); }
+        //    get { return GetValue<DateTime?>(MethodBase.GetCurrentMethod().Name); }
+        //}
+
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 //
 using DBAccess.Reflection;
+using DBAccess.HelperClass;
 
 namespace DBAccess.Entity
 {
@@ -41,6 +42,7 @@ namespace DBAccess.Entity
             NotChecks = new List<string>();
             fileds = new Dictionary<string, object>();
             EH = new EntityHelper<BaseModel>();
+            NotFiled = new List<string>();
         }
 
         /// <summary>
@@ -105,15 +107,22 @@ namespace DBAccess.Entity
         /// <typeparam name="T"></typeparam>
         /// <param name="FiledName"></param>
         /// <returns></returns>
-        public object GetValue(string FiledName, Type T)
-        {
-            if (FiledName.StartsWith("get_"))
-                FiledName = FiledName.Replace("get_", "");
-            if (fileds.ContainsKey(FiledName))
-                return fileds[FiledName];
-            else
-                return null;
-        }
+        //public T GetValue<T>(string FiledName)
+        //{
+        //    try
+        //    {
+        //        if (FiledName.StartsWith("get_"))
+        //            FiledName = FiledName.Replace("get_", "");
+        //        if (fileds.ContainsKey(FiledName))
+        //            return (T)fileds[FiledName];
+        //        else
+        //            return default(T);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return default(T);
+        //    }
+        //}
 
         /// <summary>
         /// 添加不验证字段

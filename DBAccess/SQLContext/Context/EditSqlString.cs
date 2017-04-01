@@ -32,21 +32,25 @@ namespace DBAccess.SQLContext.Context
         /// <returns></returns>
         public override SQL_Container GetSqlString(T entity)
         {
+            list_sqlpar = new List<SqlParameter>();
             return this.GetSQL(entity);
         }
 
         public SQL_Container GetSqlString<M>(T entity, Expression<Func<M, bool>> where) where M : BaseModel, new()
         {
+            list_sqlpar = new List<SqlParameter>();
             return this.GetSQL(entity, " AND " + base.GetWhereString(where, ref list_sqlpar));
         }
 
         public SQL_Container GetSqlString<M>(T entity, M where) where M : BaseModel, new()
         {
+            list_sqlpar = new List<SqlParameter>();
             return this.GetSQL(entity, base.GetWhereString(where, ref list_sqlpar));
         }
 
         public SQL_Container GetSqlString(T entity, string where)
         {
+            list_sqlpar = new List<SqlParameter>();
             return this.GetSQL(entity, base.GetWhereString(where));
         }
 
@@ -89,7 +93,7 @@ namespace DBAccess.SQLContext.Context
                 set.Add(key + "=@" + key + "");
                 list_sqlpar.Add(new SqlParameter() { ParameterName = key, Value = value });
             }
-            string sql = string.Format(" UPDATE {0} SET {1} WHERE 1=1 {2}", TableName, string.Join(",", set), string.IsNullOrEmpty(where) ? where : " AND " + where);
+            string sql = string.Format(" UPDATE {0} SET {1} WHERE 1=1 {2} ", TableName, string.Join(",", set), string.IsNullOrEmpty(where) ? where : " AND " + where);
             return new SQL_Container(sql, list_sqlpar.ToArray());
         }
 

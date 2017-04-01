@@ -32,12 +32,12 @@ namespace DBAccess.SQLContext.Context
         /// <returns></returns>
         public override SQL_Container GetSqlString(T entity)
         {
+            list_sqlpar = new List<SqlParameter>();
             return this.GetSQL(entity);
         }
 
         private SQL_Container GetSQL(T entity)
         {
-            list_sqlpar = new List<SqlParameter>();
             var TableName = entity.TableName;
             var col = new List<string>();
             var val = new List<string>();

@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 using System.Linq.Expressions;
 using DBAccess.Reflection;
 using DBAccess.Entity;
-using DBAccess.HelperClass;
 using System.Dynamic;
 using System.Data;
-using DBAccess.AdoDotNet;
+using System.Web.Script.Serialization;
 
 namespace DBAccess.SQLContext
 {
     public class FindContext<T> where T : BaseModel, new()
     {
         Context.FindSqlString<T> sqlstring;
+        JavaScriptSerializer jss;
         SelectContext select;
         private FindContext() { }
 
@@ -27,6 +27,7 @@ namespace DBAccess.SQLContext
             _ConnectionString = ConnectionString;
             select = new SelectContext(_ConnectionString);
             sqlstring = new Context.FindSqlString<T>();
+            jss = new JavaScriptSerializer();
         }
 
         private SQL_Container GetSql<M>(M entity) where M : BaseModel, new()
@@ -100,7 +101,7 @@ namespace DBAccess.SQLContext
 
         public object FINDToObj(string SQL)
         {
-            return SqlHelper.ExecuteScalar(_ConnectionString, CommandType.Text, SQL.ToString());
+            return select.ExecuteScalar(SQL.ToString());
         }
 
         public DataTable Find(string SQL, int PageIndex, int PageSize, out int PageCount, out int Counts)
@@ -135,34 +136,9 @@ namespace DBAccess.SQLContext
         /// <returns></returns>
         public T ToModel<T>(DataRow r, T entity) where T : BaseModel
         {
-            var list = entity.EH.GetAllPropertyInfo(entity);
-            foreach (DataColumn dc in r.Table.Columns)
-            {
-                var pi = list.Find(item => item.Name.Equals(dc.ColumnName));
-                if (pi == null) continue;
-                if (!Convert.IsDBNull(r[dc.ColumnName]))
-                {
-                    if (pi.PropertyType == typeof(Guid?))
-                        pi.SetValue(entity, r[dc.ColumnName] as Guid?);
-                    else if (pi.PropertyType == typeof(int?))
-                        pi.SetValue(entity, r[dc.ColumnName] as int?);
-                    else if (pi.PropertyType == typeof(string))
-                        pi.SetValue(entity, r[dc.ColumnName] as string);
-                    else if (pi.PropertyType == typeof(decimal?))
-                        pi.SetValue(entity, r[dc.ColumnName] as decimal?);
-                    else if (pi.PropertyType == typeof(double?))
-                        pi.SetValue(entity, r[dc.ColumnName] as double?);
-                    else if (pi.PropertyType == typeof(float?))
-                        pi.SetValue(entity, r[dc.ColumnName] as float?);
-                    else if (pi.PropertyType == typeof(DateTime?))
-                        pi.SetValue(entity, r[dc.ColumnName] as DateTime?);
-                    else if (pi.PropertyType == typeof(bool?))
-                        pi.SetValue(entity, r[dc.ColumnName] as bool?);
-                    else
-                        throw new Exception("FindContext,的 ToModel 函数 暂不支持该类型" + pi.PropertyType + " !");
-                }
-            }
-            return entity;
+            var model = new Dictionary<string, object>();
+            foreach (DataColumn item in r.Table.Columns) model.Add(item.ColumnName, r[item.ColumnName]);
+            return jss.Deserialize<T>(jss.Serialize(model));
         }
 
         /// <summary>
@@ -173,44 +149,13 @@ namespace DBAccess.SQLContext
         /// <returns></returns>
         private List<T> ConvertDataTableToList<T>(DataTable table)
         {
-            List<T> list = new List<T>();
-            Type typeInfo = typeof(T);
-            //得到T内所有的公共属性
-            var propertys = typeInfo.GetProperties().ToList();
-            foreach (DataRow rowItem in table.Rows)
+            var list = new List<T>();
+            foreach (DataRow dr in table.Rows)
             {
-                //通过反射动态创建对象
-                T objT = Activator.CreateInstance<T>();
-                //给objT的所有属性赋值
-                foreach (DataColumn columnItem in table.Columns)
-                {
-                    //获取指定单元格的值
-                    object value = rowItem[columnItem.ColumnName];
-                    if (!Convert.IsDBNull(value))
-                    {
-                        var pi = propertys.Find(item => item.Name.ToLower() == columnItem.ColumnName.ToLower());
-
-                        if (pi.PropertyType == typeof(Guid?))
-                            pi.SetValue(objT, value as Guid?);
-                        else if (pi.PropertyType == typeof(int?))
-                            pi.SetValue(objT, value as int?);
-                        else if (pi.PropertyType == typeof(string))
-                            pi.SetValue(objT, value as string);
-                        else if (pi.PropertyType == typeof(decimal?))
-                            pi.SetValue(objT, value as decimal?);
-                        else if (pi.PropertyType == typeof(double?))
-                            pi.SetValue(objT, value as double?);
-                        else if (pi.PropertyType == typeof(float?))
-                            pi.SetValue(objT, value as float?);
-                        else if (pi.PropertyType == typeof(DateTime?))
-                            pi.SetValue(objT, value as DateTime?);
-                        else if (pi.PropertyType == typeof(bool?))
-                            pi.SetValue(objT, value as bool?);
-                        else
-                            throw new Exception("FindContext,的 ConvertDataTableToList 函数 暂不支持该类型" + pi.PropertyType + " !");
-                    }
-                }
-                list.Add(objT);
+                var model = new Dictionary<string, object>();
+                foreach (DataColumn dc in table.Columns)
+                    model.Add(dc.ColumnName, dr[dc.ColumnName]);
+                list.Add(jss.Deserialize<T>(jss.Serialize(model)));
             }
             return list;
         }
